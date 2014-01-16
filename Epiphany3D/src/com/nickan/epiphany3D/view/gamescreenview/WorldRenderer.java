@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -62,6 +63,9 @@ public class WorldRenderer {
 	Label label;
 
 	ModelInstanceManager instanceManager = new ModelInstanceManager();
+	
+	Texture barTexture;
+	Sprite barSprite;
 
 	public WorldRenderer(World world) {
 		this.world = world;
@@ -72,12 +76,6 @@ public class WorldRenderer {
 		environment = new Environment();
 		lights = new PointLight().set(1, 1, 1, 3, 3, 3, 10f);
 		environment.add(lights);
-//		lights.ambientLight.set(0.4f, 0.4f, 0.4f, 1f);
-//		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1.0f, -0.8f, -0.2f));
-//		lights.add(new PointLight().set(1, 1, 1, 3, 3, 3, 10f));
-
-		//...
-//		System.out.println("Light: " + lights.pointLights.size);
 
 		float fov = 67;
 		cam = new PerspectiveCamera(fov, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -90,17 +88,12 @@ public class WorldRenderer {
 		assets.load("graphics/scene.g3db", Model.class);
 		assets.load("graphics/zombie.g3db", Model.class);
 		assets.load("graphics/player.g3db", Model.class);
-		
-		//... For testing
-		assets.load("graphics/test/angel.g3db", Model.class);
-		assets.load("graphics/test.g3db", Model.class);
 
 		loading = true;
 
 		// For Debugging...
 		shapeRenderer = new ShapeRenderer();
-
-		//...
+		
 		load2DVariables();
 	}
 
@@ -132,90 +125,44 @@ public class WorldRenderer {
 //		debug();
 	}
 
-	private void debug() {
-		if (Epiphany3D.debug) {
-			// Represents tile in the game
-			shapeRenderer.setProjectionMatrix(cam.combined);
-			shapeRenderer.begin(ShapeType.Line);
-			for (int z = 0; z < 10; ++z) {
-				for (int x = 0; x < 10; ++x) {
-					shapeRenderer.identity();
-					shapeRenderer.translate(x, 0, z);
-					shapeRenderer.rotate(1, 0, 0, 90);
-					shapeRenderer.rect(0, 0, 1f, 1f);
-				}
-			}
-
-			// Player bounding box
-			drawBounds(world.player.getPosition(), world.player.getDimension());
-			drawBounds(world.enemy.getPosition(), world.enemy.getDimension());
-			shapeRenderer.end();
-		}
-	}
-
-
 	/**
 	 * For me to draw 2D HUD
 	 * @param delta
 	 */
 	private void renderSpriteBatch(float delta) {
-//		stage.act();
-//		drawHUDClickedEnemyHealthBar();
-//		drawLetters(delta);
-//		stage.draw();
+		spriteBatch.begin();
+		drawHUDClickedEnemyHealthBar();
+		drawLetters(delta);
+		spriteBatch.end();
 	}
 	
 	private void drawLetters(float delta) {
-		// Testing
-//		SpriteBatch batch = stage.getSpriteBatch();
-		
-		spriteBatch.begin();
 		spriteBatch.setShader(fontShader);
-	//	arial.draw(spriteBatch, "I love you kandie", 30, 30);
-//		Vector3 pos = new Vector3().set(world.enemy.getPosition());
-//		pos.y += 2;
-//		world.camController.cam.project(pos);
-//		comic.draw(spriteBatch, "I love you so much Kandie", pos.x, pos.y);
-		AttackDamageRenderer.getInstance().draw(spriteBatch, world.camController.cam, comic, delta);
-		
+		AttackDamageRenderer.getInstance().draw(spriteBatch, world.camController.cam, comic, delta);	
 		spriteBatch.setShader(null);
-		spriteBatch.end();
 	}
 
-	private void drawBounds(Vector3 position, Dimension dimension) {
-		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.identity();
-		shapeRenderer.translate(position.x, position.y, position.z);
-		shapeRenderer.box(-dimension.width / 2, 0, -dimension.depth / 2, dimension.width, dimension.height, -dimension.depth);
-	}
 
-	private void drawBounds(BoundingBox box) {
-		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.identity();
-		shapeRenderer.translate(box.min.x, box.min.y, box.min.z);
-		Vector3 dimension = new Vector3(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
-		shapeRenderer.box(0, 0, 0, dimension.x, dimension.y, -dimension.z);
-	}
 
 	/**
 	 * It does exactly what the method name is, uses the matrix of the stage SpriteBatch camera to project the ShapeRenderer
 	 */
-	private void drawHUDClickedEnemyHealthBar() {
-		shapeRenderer.setColor(Color.YELLOW);
-		shapeRenderer.begin(ShapeType.Filled);
-		shapeRenderer.identity();
-		shapeRenderer.translate(0, 10, 0);
-
-		float healthBarWidth = 200;
-		float healthBarHeight = 10;
-
-		// For the real hp
-		shapeRenderer.rect(Gdx.graphics.getWidth() / 2 - healthBarWidth / 2, Gdx.graphics.getHeight() - 30, healthBarWidth, healthBarHeight);
-
-		shapeRenderer.setColor(Color.GRAY);
-		shapeRenderer.rect(Gdx.graphics.getWidth() / 2 - healthBarWidth / 2, Gdx.graphics.getHeight() - 30, healthBarWidth, healthBarHeight);
-		// For the background full hp
-		shapeRenderer.end();
+	private void drawHUDClickedEnemyHealthBar() {		
+		// Testing the newly found knowledge that should have been discovered in the first place >_<
+		// Full Hp
+		barSprite.setColor(Color.GRAY);
+		barSprite.setBounds(0, 0, 200, 10);
+		
+		float barPosX = (Gdx.graphics.getWidth() / 2) - barSprite.getWidth() / 2;
+		float barPosY = (Gdx.graphics.getHeight() - barSprite.getHeight() / 2) - Gdx.graphics.getHeight() / 30;
+		barSprite.setPosition( barPosX, barPosY);
+		barSprite.draw(spriteBatch);
+		
+		// Current Hp
+		barSprite.setColor(Color.YELLOW);
+		barSprite.setBounds(0, 0, 100, 10);
+		barSprite.setPosition(barPosX, barPosY);
+		barSprite.draw(spriteBatch);
 	}
 
 	private void doneLoading() {
@@ -270,6 +217,14 @@ public class WorldRenderer {
 		Texture texture = new Texture(Gdx.files.internal("graphics/fonts/comic.png"), true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
 		
+		barTexture = new Texture(Gdx.files.internal("graphics/bar.png"), true);
+		barTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		barSprite = new Sprite(barTexture);
+		barSprite.setBounds(0, 0, 200, 10);
+		barSprite.setPosition( (Gdx.graphics.getWidth() / 2) - barSprite.getWidth() / 2, 
+				(Gdx.graphics.getHeight() - barSprite.getHeight() / 2) - Gdx.graphics.getHeight() / 30);
+		
 		comic = new BitmapFont(Gdx.files.internal("graphics/fonts/comic.fnt"), new TextureRegion(texture), false);
 		comic.setColor(Color.WHITE);
 //		comic.setScale(2f);
@@ -295,6 +250,43 @@ public class WorldRenderer {
 
 		stage.addActor(label);
 	}
+	
+	// For debugging methods
+	private void debug() {
+		if (Epiphany3D.debug) {
+			// Represents tile in the game
+			shapeRenderer.setProjectionMatrix(cam.combined);
+			shapeRenderer.begin(ShapeType.Line);
+			for (int z = 0; z < 10; ++z) {
+				for (int x = 0; x < 10; ++x) {
+					shapeRenderer.identity();
+					shapeRenderer.translate(x, 0, z);
+					shapeRenderer.rotate(1, 0, 0, 90);
+					shapeRenderer.rect(0, 0, 1f, 1f);
+				}
+			}
+
+			// Player bounding box
+			drawBounds(world.player.getPosition(), world.player.getDimension());
+			drawBounds(world.enemy.getPosition(), world.enemy.getDimension());
+			shapeRenderer.end();
+		}
+	}
+	
+	private void drawBounds(Vector3 position, Dimension dimension) {
+		shapeRenderer.setColor(Color.WHITE);
+		shapeRenderer.identity();
+		shapeRenderer.translate(position.x, position.y, position.z);
+		shapeRenderer.box(-dimension.width / 2, 0, -dimension.depth / 2, dimension.width, dimension.height, -dimension.depth);
+	}
+
+	private void drawBounds(BoundingBox box) {
+		shapeRenderer.setColor(Color.WHITE);
+		shapeRenderer.identity();
+		shapeRenderer.translate(box.min.x, box.min.y, box.min.z);
+		Vector3 dimension = new Vector3(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
+		shapeRenderer.box(0, 0, 0, dimension.x, dimension.y, -dimension.z);
+	}
 
 	public void dispose() {
 		assets.dispose();
@@ -305,6 +297,7 @@ public class WorldRenderer {
 		arial.dispose();
 		comic.dispose();
 		shapeRenderer.dispose();
+		barTexture.dispose();
 	}
 
 }
