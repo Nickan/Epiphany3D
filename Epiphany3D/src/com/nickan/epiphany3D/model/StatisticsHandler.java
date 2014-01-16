@@ -10,8 +10,8 @@ public class StatisticsHandler {
 	public float experience = 0;
 	public int remainingStatusPoints = 10;
 
-	public float hp;
-	public float mp;
+	public float currentHp;
+	public float currentMp;
 
 	// The bases fields will be used for balancing (if that will happen)
 	public float baseStr = 1;
@@ -74,8 +74,8 @@ public class StatisticsHandler {
 		this.baseAgi = baseAgi;
 		this.baseWis = baseWis;
 		
-		resetStats();
 		initializeStatus();
+		resetStats();
 		applyFinalStats();
 	}
 	
@@ -104,8 +104,8 @@ public class StatisticsHandler {
 		baseDef = 10;
 		baseCrit = 10;
 		
-		hp = totalVit * 3;
-		mp = totalWis * 3;
+		baseFullHp = totalVit * 3;
+		baseFullMp = totalWis * 3;
 	}
 
 	/**
@@ -124,8 +124,8 @@ public class StatisticsHandler {
 		totalAvoid = baseAvoid;
 		totalDef = baseDef;
 		totalCrit = baseCrit;
-		totalFullHp = hp = baseFullHp + (baseVit * 3);
-		totalFullMp = mp = baseFullMp;
+		totalFullHp = currentHp = baseFullHp;
+		totalFullMp = currentMp = baseFullMp;
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class StatisticsHandler {
 		if (hpDamage < 1) {
 			hpDamage = 1;
 		}
-		hp -= hpDamage;
+		currentHp -= hpDamage;
 	}
 	
 	public int getHpDamage() {
@@ -225,7 +225,7 @@ public class StatisticsHandler {
 	}
 	
 	public boolean isAlive() {
-		return (hp < 1) ? false: true;
+		return (currentHp < 1) ? false: true;
 	}
 	
 }
