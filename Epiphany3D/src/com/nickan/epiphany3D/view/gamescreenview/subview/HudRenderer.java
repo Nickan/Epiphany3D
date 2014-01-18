@@ -43,7 +43,7 @@ public class HudRenderer {
 		enemyNameLabel = new Label("Enemy", ls);
 		enemyNameLabel.setHeight(hpBarHeight);
 		
-		hpBarTexture = new Texture(Gdx.files.internal("graphics/bar.png"), true);
+		hpBarTexture = new Texture(Gdx.files.internal("graphics/hpBar.png"), true);
 		hpBarTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		hpBarSprite = new Sprite(hpBarTexture);
@@ -64,7 +64,7 @@ public class HudRenderer {
 		hpBarSprite.draw(spriteBatch);
 
 		// Current Hp
-		float fracCurrentHp = enemy.statsHandler.totalFullHp / enemy.statsHandler.currentHp;
+		float fracCurrentHp = enemy.statsHandler.currentHp / enemy.statsHandler.totalFullHp;
 		hpBarSprite.setColor(Color.LIGHT_GRAY);
 		hpBarSprite.setBounds(hpBarPosX, hpBarPosY, hpBarWidth * fracCurrentHp, hpBarHeight);
 		hpBarSprite.draw(spriteBatch);

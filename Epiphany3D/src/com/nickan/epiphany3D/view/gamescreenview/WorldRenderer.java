@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -31,6 +32,7 @@ import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
 import com.nickan.epiphany3D.model.Dimension;
 import com.nickan.epiphany3D.view.gamescreenview.subview.AttackDamageRenderer;
+import com.nickan.epiphany3D.view.gamescreenview.subview.HudRenderer;
 
 public class WorldRenderer {
 	World world;
@@ -66,6 +68,8 @@ public class WorldRenderer {
 	
 	Texture barTexture;
 	Sprite barSprite;
+	
+	HudRenderer hudRenderer;
 
 	public WorldRenderer(World world) {
 		this.world = world;
@@ -120,59 +124,21 @@ public class WorldRenderer {
 				batch.render(instance, environment);
 		}
 		batch.end();
-
-		renderSpriteBatch(delta);
+		
+		spriteBatch.begin();
+		spriteBatch.setShader(fontShader);
+		hudRenderer.draw(spriteBatch);
+		spriteBatch.end();
 //		debug();
 	}
 
-	/**
-	 * For me to draw 2D HUD
-	 * @param delta
-	 */
-	private void renderSpriteBatch(float delta) {
-		spriteBatch.begin();
-		drawHUDClickedEnemyHealthBar();
-		drawLetters(delta);
-		spriteBatch.end();
-	}
-	
-	private void drawLetters(float delta) {
-		spriteBatch.setShader(fontShader);
-		AttackDamageRenderer.getInstance().draw(spriteBatch, world.camController.cam, comic, delta);	
-		spriteBatch.setShader(null);
-	}
 
-
-
-	/**
-	 * It does exactly what the method name is, uses the matrix of the stage SpriteBatch camera to project the ShapeRenderer
-	 */
-	private void drawHUDClickedEnemyHealthBar() {		
-		// Testing the newly found knowledge that should have been discovered in the first place >_<
-		// Full Hp
-		barSprite.setColor(Color.GRAY);
-		barSprite.setBounds(0, 0, 200, 10);
-		
-		float barPosX = (Gdx.graphics.getWidth() / 2) - barSprite.getWidth() / 2;
-		float barPosY = (Gdx.graphics.getHeight() - barSprite.getHeight() / 2) - Gdx.graphics.getHeight() / 30;
-		barSprite.setPosition( barPosX, barPosY);
-		barSprite.draw(spriteBatch);
-		
-		// Current Hp
-		barSprite.setColor(Color.YELLOW);
-		barSprite.setBounds(0, 0, 100, 10);
-		barSprite.setPosition(barPosX, barPosY);
-		barSprite.draw(spriteBatch);
-	}
 
 	private void doneLoading() {
 		player = new ModelInstance(assets.get("graphics/player.g3db", Model.class));
 		zombie = new ModelInstance(assets.get("graphics/zombie.g3db", Model.class));
 		
 		world.player.setModelInstance(player, 6, 40, 10);
-		
-		//...
-//		System.out.println("Player's attack animation speed: " + world.player.aniHandler.attackPlaySpeed);
 		
 //		world.enemy.setModelInstance(zombie, 11, 20, 10);
 		Model zombieModel = assets.get("graphics/zombie.g3db", Model.class);
@@ -208,7 +174,6 @@ public class WorldRenderer {
 	}
 
 	private void load2DVariables() {
-		spriteBatch = new SpriteBatch();
 		arial = new BitmapFont(Gdx.files.internal("graphics/fonts/arial.fnt"));
 		arial.setUseIntegerPositions(false);
 //		arial.setColor(Color.BLUE);
@@ -216,14 +181,6 @@ public class WorldRenderer {
 		
 		Texture texture = new Texture(Gdx.files.internal("graphics/fonts/comic.png"), true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		
-		barTexture = new Texture(Gdx.files.internal("graphics/bar.png"), true);
-		barTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		barSprite = new Sprite(barTexture);
-		barSprite.setBounds(0, 0, 200, 10);
-		barSprite.setPosition( (Gdx.graphics.getWidth() / 2) - barSprite.getWidth() / 2, 
-				(Gdx.graphics.getHeight() - barSprite.getHeight() / 2) - Gdx.graphics.getHeight() / 30);
 		
 		comic = new BitmapFont(Gdx.files.internal("graphics/fonts/comic.fnt"), new TextureRegion(texture), false);
 		comic.setColor(Color.WHITE);
@@ -249,6 +206,10 @@ public class WorldRenderer {
 		label.setAlignment(Align.center);
 
 		stage.addActor(label);
+		
+		spriteBatch = (SpriteBatch) stage.getSpriteBatch();
+		hudRenderer = new HudRenderer(arial, comic);
+		hudRenderer.enemy = world.enemies.get(0);
 	}
 	
 	// For debugging methods
@@ -287,7 +248,15 @@ public class WorldRenderer {
 		Vector3 dimension = new Vector3(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
 		shapeRenderer.box(0, 0, 0, dimension.x, dimension.y, -dimension.z);
 	}
-
+	
+	public void resize(int width, int height) {
+		hudRenderer.resize(width, height);
+		OrthographicCamera cam = new OrthographicCamera(width, height);
+		cam.position.set(width / 2, height / 2, 0);
+		cam.update();
+		spriteBatch.setProjectionMatrix(cam.combined);
+	}
+	
 	public void dispose() {
 		assets.dispose();
 		batch.dispose();
