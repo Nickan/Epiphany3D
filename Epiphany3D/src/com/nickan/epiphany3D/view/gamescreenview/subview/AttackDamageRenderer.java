@@ -1,6 +1,7 @@
 package com.nickan.epiphany3D.view.gamescreenview.subview;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,15 +17,15 @@ public class AttackDamageRenderer {
 	StringBuilder builder = new StringBuilder();
 
 	/**
-	 * Will store the x and y for the position of the damage for the damage value to be shown
-	 * on the screen
+	 * Will Store the position and the damage to be rendered on the screen
 	 */
 	private Array<AttackDamageStorage> entities = new Array<AttackDamageStorage>();
 
 	private AttackDamageRenderer() {
 		entities.clear();
 	}
-
+	
+	
 	private class AttackDamageStorage {
 		private Vector3 position;
 		private Vector2 pos;
@@ -39,7 +40,7 @@ public class AttackDamageRenderer {
 		}
 	}
 
-	public void draw(SpriteBatch batch, PerspectiveCamera cam, BitmapFont font, float delta) {
+	public void draw(SpriteBatch batch, PerspectiveCamera cam, BitmapFont font) {
 		for (AttackDamageStorage storage: entities) {
 			pos.set(storage.position);
 			float yPosDrawAdj = 2;
@@ -55,8 +56,8 @@ public class AttackDamageRenderer {
 			}
 			
 			font.draw(batch, builder.toString(), pos.x + storage.pos.x, pos.y + storage.pos.y);
-			storage.duration += delta;
-			storage.pos.y += Y_SPEED * delta;
+			storage.duration += Gdx.graphics.getDeltaTime();
+			storage.pos.y += Y_SPEED * Gdx.graphics.getDeltaTime();
 		}
 
 		for (AttackDamageStorage storage: entities) {
@@ -68,16 +69,13 @@ public class AttackDamageRenderer {
 	}
 
 	/**
-	 *
-	 * @param x	- x coordinates
-	 * @param y - y coordinates
-	 * @param attackDamage - The value of the damage to be shown, set to zero to show miss
+	 * 
+	 * @param posRef - The reference to the vector
+	 * @param damage
 	 */
-	public void addAttackDamageToScreen(Vector3 position, int damage) {
-		entities.add(new AttackDamageStorage(position, damage));
+	public void addAttackDamageToScreen(Vector3 posRef, int damage) {
+		entities.add(new AttackDamageStorage(posRef, damage));
 	}
-	
-
 
 	public static AttackDamageRenderer getInstance() {
 		return attackDamageRenderer;
