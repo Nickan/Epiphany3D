@@ -31,7 +31,6 @@ import com.badlogic.gdx.utils.Array;
 import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
 import com.nickan.epiphany3D.model.Dimension;
-import com.nickan.epiphany3D.view.gamescreenview.subview.AttackDamageRenderer;
 import com.nickan.epiphany3D.view.gamescreenview.subview.HudRenderer;
 
 public class WorldRenderer {
@@ -208,7 +207,7 @@ public class WorldRenderer {
 		stage.addActor(label);
 		
 		spriteBatch = (SpriteBatch) stage.getSpriteBatch();
-		hudRenderer = new HudRenderer(arial, comic);
+		hudRenderer = new HudRenderer(arial, comic, cam);
 		hudRenderer.enemy = world.enemies.get(0);
 	}
 	
