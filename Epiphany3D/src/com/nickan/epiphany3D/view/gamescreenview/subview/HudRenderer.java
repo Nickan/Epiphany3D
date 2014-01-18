@@ -2,11 +2,13 @@ package com.nickan.epiphany3D.view.gamescreenview.subview;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.nickan.epiphany3D.model.Character;
@@ -31,10 +33,12 @@ public class HudRenderer {
 	private float hpBarPosX;
 	private float hpBarPosY;
 	
+	PerspectiveCamera cam;
 	
-	public HudRenderer(BitmapFont arial, BitmapFont comic) {
+	public HudRenderer(BitmapFont arial, BitmapFont comic, PerspectiveCamera camera) {
 		this.arial = arial;
 		this.comic = comic;
+		this.cam = camera;
 		
 		hpBarWidth = Gdx.graphics.getWidth() / 3;
 		hpBarHeight = Gdx.graphics.getHeight() / 30;
@@ -52,6 +56,7 @@ public class HudRenderer {
 	public void draw(SpriteBatch spriteBatch) {
 		drawHealthBar(spriteBatch);
 		drawLetters(spriteBatch);
+		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
 	}
 	
 	private void drawHealthBar(SpriteBatch spriteBatch) {
@@ -68,10 +73,6 @@ public class HudRenderer {
 		hpBarSprite.setColor(Color.LIGHT_GRAY);
 		hpBarSprite.setBounds(hpBarPosX, hpBarPosY, hpBarWidth * fracCurrentHp, hpBarHeight);
 		hpBarSprite.draw(spriteBatch);
-		
-		//...
-		System.out.println("Full Hp: " + enemy.statsHandler.totalFullHp);
-		System.out.println("Current Hp: " + enemy.statsHandler.currentHp);
 	}
 	
 	private void drawLetters(SpriteBatch spriteBatch) {
