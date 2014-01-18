@@ -29,12 +29,12 @@ public class GameScreen implements Screen {
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-
+		renderer.resize(width, height);
 	}
 
 	@Override
 	public void show() {
-
+		
 	}
 
 	@Override
