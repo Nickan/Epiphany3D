@@ -12,7 +12,7 @@ public class CameraController {
 	Vector3 playerPos;
 
 	float moveSpeed = 5f;
-	float lookSpeed = 25f;
+	float lookSpeed = 50f;
 	float zoomScale = 5f;
 
 	boolean moveForward = false;
