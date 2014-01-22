@@ -141,7 +141,7 @@ public class Character extends MoveableEntity {
 		statsHandler.applyDamage(damage);
 		
 		//...
-		System.out.println("Current hp: " + statsHandler.hp);
+		System.out.println("Current hp: " + statsHandler.currentHp);
 	}
 	
 	public boolean isAlive() {
