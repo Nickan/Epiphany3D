@@ -21,7 +21,7 @@ public class InventoryScreen implements Screen {
 	Skin skin;
 	GameScreen gameScreen;
 	Epiphany3D game;
-	Inventory inventory;
+	InventoryController inventory;
 	
 	public InventoryScreen(Epiphany3D game, GameScreen gameScreen) {
 		this.game = game;
@@ -61,7 +61,7 @@ public class InventoryScreen implements Screen {
 
 		stage.addActor(positiveButton);
 		stage.addActor(resumeButton);
-		inventory = new Inventory(this);
+		inventory = new InventoryController(this);
 	}
 
 	@Override
