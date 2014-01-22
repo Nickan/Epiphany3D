@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -24,8 +24,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.nickan.epiphany3D.Epiphany3D;
@@ -53,14 +55,14 @@ public class WorldRenderer {
 	ShapeRenderer shapeRenderer;
 
 	// Drawing text
-	SpriteBatch spriteBatch;
+	public SpriteBatch spriteBatch;
 	BitmapFont courier;
-	BitmapFont arial;
-	BitmapFont comic;
+	public BitmapFont arial;
+	public BitmapFont comic;
 	
 	ShaderProgram fontShader;
 
-	Stage stage;
+	public Stage stage;
 	Label label;
 
 	ModelInstanceManager instanceManager = new ModelInstanceManager();
@@ -69,6 +71,10 @@ public class WorldRenderer {
 	Sprite barSprite;
 	
 	HudRenderer hudRenderer;
+	
+	Button pauseButton;
+	TextureAtlas atlas;
+	Skin skin;
 
 	public WorldRenderer(World world) {
 		this.world = world;
@@ -115,23 +121,21 @@ public class WorldRenderer {
 		batch.begin(cam);
 
 		if (!loading) {
-//			skydome.transform.setToTranslation(cam.position.x, cam.position.y - 2, cam.position.z);
-//			batch.render(skydome);
-//			batch.flush();
-
 			for (ModelInstance instance: instances)
 				batch.render(instance, environment);
 		}
 		batch.end();
 		
+		
+		stage.act();
 		spriteBatch.begin();
 		spriteBatch.setShader(fontShader);
-		hudRenderer.draw(spriteBatch);
+		hudRenderer.draw(spriteBatch, cam);
+		spriteBatch.setShader(null);
 		spriteBatch.end();
+		stage.draw();
 //		debug();
 	}
-
-
 
 	private void doneLoading() {
 		player = new ModelInstance(assets.get("graphics/player.g3db", Model.class));
@@ -139,7 +143,6 @@ public class WorldRenderer {
 		
 		world.player.setModelInstance(player, 6, 40, 10);
 		
-//		world.enemy.setModelInstance(zombie, 11, 20, 10);
 		Model zombieModel = assets.get("graphics/zombie.g3db", Model.class);
 		for (ArtificialIntelligence enemy: world.enemies) {
 			ModelInstance tempInstance = new ModelInstance(zombieModel);
@@ -148,7 +151,6 @@ public class WorldRenderer {
 		}
 		
 		instances.add(player);
-//		instances.add(zombie);
 
 		Model model = assets.get("graphics/scene.g3db", Model.class);
 		for (int i = 0; i < model.nodes.size; ++i) {
@@ -192,23 +194,32 @@ public class WorldRenderer {
 		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
 		}
 		
-		if (stage == null) {
-			stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		}
+		hudRenderer = new HudRenderer(arial, comic);
+		hudRenderer.enemy = world.enemies.get(0);
+		
+		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		stage.clear();
-
+		
+		float widthUnit = Gdx.graphics.getWidth() / 16;
+		float heightUnit = Gdx.graphics.getHeight() / 12;
+		
+		atlas = new TextureAtlas("graphics/gamescreentextures.pack");
+		skin = new Skin(atlas);
+		
+		pauseButton = new Button(skin.getDrawable("pausebuttonnormal"), skin.getDrawable("pausebuttonpressed"));
+		pauseButton.setBounds(widthUnit * 15f, heightUnit * 11.3f, widthUnit, heightUnit);
 
 		LabelStyle ls = new LabelStyle(arial, Color.YELLOW);
 		label = new Label("", ls);
-		label.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		label.setPosition(widthUnit * 8f, heightUnit * 6f);
 		label.setWidth(0);
 		label.setAlignment(Align.center);
-
+		
+		stage.addActor(pauseButton);
 		stage.addActor(label);
 		
 		spriteBatch = (SpriteBatch) stage.getSpriteBatch();
-		hudRenderer = new HudRenderer(arial, comic, cam);
-		hudRenderer.enemy = world.enemies.get(0);
+		hudRenderer.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
 	// For debugging methods
@@ -249,11 +260,18 @@ public class WorldRenderer {
 	}
 	
 	public void resize(int width, int height) {
+		stage.setViewport(width, height);
+		
+		float widthUnit = width / 16f;
+		float heightUnit = height / 12f;
+		
+		pauseButton.setBounds(widthUnit * 15f, heightUnit * 11f, widthUnit, heightUnit);
+
+		label.setPosition(widthUnit * 8f, heightUnit * 6f);
+		label.setWidth(0);
+		label.setAlignment(Align.center);
+		
 		hudRenderer.resize(width, height);
-		OrthographicCamera cam = new OrthographicCamera(width, height);
-		cam.position.set(width / 2, height / 2, 0);
-		cam.update();
-		spriteBatch.setProjectionMatrix(cam.combined);
 	}
 	
 	public void dispose() {
@@ -266,6 +284,7 @@ public class WorldRenderer {
 		comic.dispose();
 		shapeRenderer.dispose();
 		barTexture.dispose();
+		stage.dispose();
 	}
 
 }
