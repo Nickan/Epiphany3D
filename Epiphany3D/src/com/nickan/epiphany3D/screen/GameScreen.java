@@ -1,6 +1,7 @@
 package com.nickan.epiphany3D.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.view.gamescreenview.InputHandler;
@@ -8,16 +9,19 @@ import com.nickan.epiphany3D.view.gamescreenview.World;
 import com.nickan.epiphany3D.view.gamescreenview.WorldRenderer;
 
 public class GameScreen implements Screen {
-	Epiphany3D game;
-	World world;
-	WorldRenderer renderer;
+	public World world;
+	public WorldRenderer renderer;
+	InputHandler worldController;
+	public InputMultiplexer worldCtrl;
 
 	public GameScreen(Epiphany3D game) {
-		this.game = game;
 		world = new World();
 		renderer = new WorldRenderer(world);
 		world.setWorldRenderer(renderer);
-		Gdx.input.setInputProcessor(new InputHandler(world));
+		this.worldController = new InputHandler(world, game);
+		
+		worldCtrl = new InputMultiplexer(renderer.stage, worldController);
+		Gdx.input.setInputProcessor(worldCtrl);
 	}
 
 	@Override
@@ -34,7 +38,6 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void show() {
-		
 	}
 
 	@Override
@@ -59,5 +62,5 @@ public class GameScreen implements Screen {
 	public void dispose() {
 		renderer.dispose();
 	}
-
+	
 }
