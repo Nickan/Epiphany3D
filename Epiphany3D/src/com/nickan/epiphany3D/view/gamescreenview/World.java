@@ -32,32 +32,13 @@ public class World {
 
 	//...
 	FPSLogger logger = new FPSLogger();
-	Vector3 textPos = new Vector3(1, -3, 55);
-	Vector3 textRot = new Vector3(0, 270, 0);
-
 	CameraController camController;
-
 
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
 //		player.statsHandler.whosYourDaddy();
-		//...
-//		System.out.println("Attack Delay player: " + player.aniHandler.attackPlaySpeed);
-		
-//		enemy = new ArtificialIntelligence(new Vector3(1.5f, 0, 1.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 0.5f);
-
-//		enemy.setEnemyId(player.getId());
-
-//		occupiedNodes.add(enemy.getNextNode());
 		occupiedNodes.add(player.getNextNode());
-
-		//...
-		for (Node node : occupiedNodes) {
-			System.out.println(node.x + ": " + node.y);
-		}
-
 		enemies.clear();
-		
 		
 		// Testing for summoning lots of enemies
 		enemies.add(new ArtificialIntelligence(new Vector3(14.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 0.5f));
@@ -98,7 +79,7 @@ public class World {
 			enemy.update(delta);
 		}
 	}
-
+	
 	public void setWorldRenderer(WorldRenderer renderer) {
 		this.renderer = renderer;
 		camController = new CameraController(renderer.cam);
