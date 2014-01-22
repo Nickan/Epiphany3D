@@ -32,12 +32,9 @@ public class HudRenderer {
 	private float hpBarPosX;
 	private float hpBarPosY;
 	
-	PerspectiveCamera cam;
-	
-	public HudRenderer(BitmapFont arial, BitmapFont comic, PerspectiveCamera camera) {
+	public HudRenderer(BitmapFont arial, BitmapFont comic) {
 		this.arial = arial;
 		this.comic = comic;
-		this.cam = camera;
 		
 		hpBarWidth = Gdx.graphics.getWidth() / 3;
 		hpBarHeight = Gdx.graphics.getHeight() / 30;
@@ -52,7 +49,7 @@ public class HudRenderer {
 		hpBarSprite = new Sprite(hpBarTexture);
 	}
 	
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(SpriteBatch spriteBatch, PerspectiveCamera cam) {
 		drawHealthBar(spriteBatch);
 		drawLetters(spriteBatch);
 		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
@@ -86,11 +83,14 @@ public class HudRenderer {
 	}
 	
 	public void resize(int width, int height) {
-		hpBarWidth = Gdx.graphics.getWidth() / 3;
-		hpBarHeight = Gdx.graphics.getHeight() / 30;
+		hpBarWidth = width / 3;
+		hpBarHeight = height / 30;
 		
-		hpBarPosX = (width / 2) - (hpBarWidth / 2);
-		hpBarPosY = height - (hpBarHeight * 2);
+		float widthUnit = width / 16f;
+		float heightUnit = height / 12f;
+		
+		hpBarPosX = (widthUnit * 8f) - (hpBarWidth / 2);
+		hpBarPosY = (heightUnit * 11.5f) - (hpBarHeight / 2);
 	}
 	
 	public void dispose() {
