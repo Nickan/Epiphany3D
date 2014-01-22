@@ -1,24 +1,27 @@
 package com.nickan.epiphany3D.view.gamescreenview;
 
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
+import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
 import com.nickan.epiphany3D.model.Player;
 import com.nickan.epiphany3D.model.messagingsystem.MessageDispatcher;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
+import com.nickan.epiphany3D.screen.subgamescreen.InventoryScreen;
 import com.nickan.framework1_0.math.LineAABB;
 import com.nickan.framework1_0.pathfinder1_0.Node;
 
 public class InputHandler implements InputProcessor {
 	World world;
+	public Epiphany3D game;
 	Vector2 pointerPos = new Vector2();
 	Vector2 previousTouch = new Vector2();
 	Vector3 touch = new Vector3();
@@ -33,104 +36,43 @@ public class InputHandler implements InputProcessor {
 	// Manipulation of text on the screen
 	float pos = 0.1f;
 
-	public InputHandler(World world) {
+	public InputHandler(World world, Epiphany3D game) {
 		this.world = world;
+		this.game = game;
+		initializeButtons();
 	}
+	
+	// For the Stage's buttons
+	private void initializeButtons() {
+		initializePauseButton();
+	}
+	
+	private void initializePauseButton() {
+		Button pauseButton = world.renderer.pauseButton;
+
+		pauseButton.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				Gdx.app.log("Example", "touch done at (" + x + ", " + y + ")");
+				game.setScreen(new InventoryScreen(game, game.gameScreen));
+			}
+		});
+		
+	}
+	// End of Stage's buttons
 
 	@Override
 	public boolean keyDown(int keycode) {
-		Vector3 textPos = world.textPos;
-		Vector3 textRot = world.textRot;
-
-		switch (keycode) {
-		case Input.Keys.W:
-			//			world.camController.moveForward = true;
-			textPos.y += pos;
-			break;
-		case Input.Keys.S:
-			//			world.camController.moveBackward = true;
-			textPos.x += pos;
-			break;
-		case Input.Keys.A:
-			//			world.camController.moveLeft = true;
-
-			textPos.z += pos;
-			break;
-		case Input.Keys.D:
-			//			world.camController.moveRight = true;
-
-			textRot.y += 5;
-			break;
-		}
-
-		//...
-		System.out.println("TextPos: " + textPos);
-		System.out.println("Rotation " + textRot.y);
-
-		switch (keycode) {
-		case Input.Keys.UP:
-			//			world.player.moveUp = true;
-			textPos.y -= pos;
-			break;
-		case Input.Keys.DOWN:
-			//			world.player.moveDown = true;
-			textPos.x -= pos;
-			break;
-		case Input.Keys.LEFT:
-			//			world.player.moveLeft = true;
-			textPos.z -= pos;
-			break;
-		case Input.Keys.RIGHT:
-			//			world.player.moveRight = true;
-			break;
-		case Input.Keys.R:
-			//			float rotationSpeed = 15;
-			//			if (world.player.getRotation().y + rotationSpeed <= 359)
-			//				world.player.getRotation().y += rotationSpeed;
-			//			else
-			//				world.player.getRotation().y = (world.player.getRotation().y + rotationSpeed) - 360;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean keyUp(int keycode) {
-		CameraController camCtrl = world.camController;
-		switch (keycode) {
-		case Input.Keys.W:
-			camCtrl.moveForward = false;
-			break;
-		case Input.Keys.S:
-			camCtrl.moveBackward = false;
-			break;
-		case Input.Keys.A:
-			camCtrl.moveLeft = false;
-			break;
-		case Input.Keys.D:
-			camCtrl.moveRight = false;
-			break;
-		}
-
-		switch (keycode) {
-		case Input.Keys.UP:
-			//			world.player.moveUp = false;
-			break;
-		case Input.Keys.DOWN:
-			//			world.player.moveDown = false;
-			break;
-		case Input.Keys.LEFT:
-			//			world.player.moveLeft = false;
-			break;
-		case Input.Keys.RIGHT:
-			//			world.player.moveRight = false;
-			break;
-		}
-
-
-		if (keycode == Input.Keys.R) {
-			//			world.camController.rotation.set(0, 0, -1);
-		}
-		return true;
+		return false;
 	}
 
 	@Override
@@ -247,6 +189,7 @@ public class InputHandler implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		
 		switch (button) {
 		case Buttons.LEFT:
 			leftMouseDown = false;
