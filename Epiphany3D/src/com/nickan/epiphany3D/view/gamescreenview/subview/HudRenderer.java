@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.Character;
 
 /**
@@ -31,6 +32,8 @@ public class HudRenderer {
 	private float hpBarHeight;
 	private float hpBarPosX;
 	private float hpBarPosY;
+	private float widthUnit;
+	private float heightUnit;
 	
 	public HudRenderer(BitmapFont arial, BitmapFont comic) {
 		this.arial = arial;
@@ -74,11 +77,6 @@ public class HudRenderer {
 	private void drawLetters(SpriteBatch spriteBatch) {
 		if (enemy == null)
 			return;
-		
-		float labelPosX = (Gdx.graphics.getWidth() / 2) - enemyNameLabel.getWidth() / 2;
-		float labelPosY = hpBarPosY + hpBarHeight / 2;
-		
-		enemyNameLabel.setPosition(labelPosX, labelPosY);
 		enemyNameLabel.draw(spriteBatch, 1);
 	}
 	
@@ -86,8 +84,12 @@ public class HudRenderer {
 		hpBarWidth = width / 3;
 		hpBarHeight = height / 30;
 		
-		float widthUnit = width / 16f;
-		float heightUnit = height / 12f;
+		widthUnit = width / 16f;
+		heightUnit = height / 12f;
+
+		enemyNameLabel.setSize(0, 0);
+		enemyNameLabel.setFontScale(width / Epiphany3D.WIDTH, height / Epiphany3D.HEIGHT);
+		enemyNameLabel.setPosition(widthUnit * 7.5f, heightUnit * 11.68f);
 		
 		hpBarPosX = (widthUnit * 8f) - (hpBarWidth / 2);
 		hpBarPosY = (heightUnit * 11.5f) - (hpBarHeight / 2);
