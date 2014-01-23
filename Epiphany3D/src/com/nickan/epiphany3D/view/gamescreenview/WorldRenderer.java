@@ -22,13 +22,10 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
@@ -60,7 +57,7 @@ public class WorldRenderer {
 	public BitmapFont arial;
 	public BitmapFont comic;
 	
-	ShaderProgram fontShader;
+	public ShaderProgram fontShader;
 
 	public Stage stage;
 	Label label;
@@ -134,7 +131,8 @@ public class WorldRenderer {
 		spriteBatch.setShader(null);
 		spriteBatch.end();
 		stage.draw();
-//		debug();
+		
+		debug();
 	}
 
 	private void doneLoading() {
@@ -185,8 +183,9 @@ public class WorldRenderer {
 		
 		comic = new BitmapFont(Gdx.files.internal("graphics/fonts/comic.fnt"), new TextureRegion(texture), false);
 		comic.setColor(Color.WHITE);
+		comic.setUseIntegerPositions(false);
 //		comic.setScale(2f);
-//		arial.setUseIntegerPositions(false);
+		arial.setUseIntegerPositions(false);
 		
 		fontShader = new ShaderProgram(Gdx.files.internal("graphics/fonts/font.vert"), Gdx.files.internal("graphics/fonts/font.frag"));
 		
@@ -208,15 +207,8 @@ public class WorldRenderer {
 		
 		pauseButton = new Button(skin.getDrawable("pausebuttonnormal"), skin.getDrawable("pausebuttonpressed"));
 		pauseButton.setBounds(widthUnit * 15f, heightUnit * 11.3f, widthUnit, heightUnit);
-
-		LabelStyle ls = new LabelStyle(arial, Color.YELLOW);
-		label = new Label("", ls);
-		label.setPosition(widthUnit * 8f, heightUnit * 6f);
-		label.setWidth(0);
-		label.setAlignment(Align.center);
 		
 		stage.addActor(pauseButton);
-		stage.addActor(label);
 		
 		spriteBatch = (SpriteBatch) stage.getSpriteBatch();
 		hudRenderer.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -239,7 +231,7 @@ public class WorldRenderer {
 
 			// Player bounding box
 			drawBounds(world.player.getPosition(), world.player.getDimension());
-			drawBounds(world.enemy.getPosition(), world.enemy.getDimension());
+//			drawBounds(world.enemy.getPosition(), world.enemy.getDimension());
 			shapeRenderer.end();
 		}
 	}
@@ -251,14 +243,6 @@ public class WorldRenderer {
 		shapeRenderer.box(-dimension.width / 2, 0, -dimension.depth / 2, dimension.width, dimension.height, -dimension.depth);
 	}
 
-	private void drawBounds(BoundingBox box) {
-		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.identity();
-		shapeRenderer.translate(box.min.x, box.min.y, box.min.z);
-		Vector3 dimension = new Vector3(box.max.x - box.min.x, box.max.y - box.min.y, box.max.z - box.min.z);
-		shapeRenderer.box(0, 0, 0, dimension.x, dimension.y, -dimension.z);
-	}
-	
 	public void resize(int width, int height) {
 		stage.setViewport(width, height);
 		
@@ -266,11 +250,6 @@ public class WorldRenderer {
 		float heightUnit = height / 12f;
 		
 		pauseButton.setBounds(widthUnit * 15f, heightUnit * 11f, widthUnit, heightUnit);
-
-		label.setPosition(widthUnit * 8f, heightUnit * 6f);
-		label.setWidth(0);
-		label.setAlignment(Align.center);
-		
 		hudRenderer.resize(width, height);
 	}
 	
