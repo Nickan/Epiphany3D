@@ -1,10 +1,8 @@
 package com.nickan.epiphany3D.model.aibehavior;
 
-import com.nickan.epiphany3D.model.Character;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
 import com.nickan.epiphany3D.model.Character.State;
 import com.nickan.epiphany3D.model.characterstate.IdleState;
-import com.nickan.epiphany3D.model.messagingsystem.EntityManager;
 import com.nickan.epiphany3D.model.messagingsystem.MessageDispatcher;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
@@ -60,10 +58,6 @@ public class EnemyState implements BaseState<ArtificialIntelligence> {
 
 	public static final EnemyState getInstance() {
 		return instance;
-	}
-	
-	private Character getCharacter(int charId) {
-		return (Character) EntityManager.getInstance().getEntity(charId);
 	}
 
 }

@@ -7,7 +7,6 @@ import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
 import com.nickan.epiphany3D.model.state.BaseState;
 import com.nickan.epiphany3D.view.gamescreenview.subview.AttackDamageRenderer;
-import com.nickan.framework1_0.pathfinder1_0.Node;
 
 public class GlobalState implements BaseState<Character> {
 	private static BaseState<Character> instance = new GlobalState();
