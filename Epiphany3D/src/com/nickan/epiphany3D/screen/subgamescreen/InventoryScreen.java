@@ -7,16 +7,26 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.nickan.epiphany3D.Epiphany3D;
+import com.nickan.epiphany3D.model.items.Consumable;
+import com.nickan.epiphany3D.model.items.Item;
+import com.nickan.epiphany3D.model.items.Wearable;
 import com.nickan.epiphany3D.screen.GameScreen;
 
 public class InventoryScreen implements Screen {
-	Button positiveButton;
+	Button addButtonStr;
+	Button addButtonDex;
+	Button addButtonVit;
+	Button addButtonAgi;
+	Button addButtonWis;
+	
 	Button resumeButton;
 	
 	Button bodySlot;
@@ -43,6 +53,9 @@ public class InventoryScreen implements Screen {
 	float widthUnit;
 	float heightUnit;
 	Vector2 statsPos = new Vector2(1.5f, 8.5f);
+	Item[][] playerItems;
+	
+	Vector2 worldUnit = new Vector2(16f, 12f);
 	
 	public InventoryScreen(Epiphany3D game, GameScreen gameScreen) {
 		this.game = game;
@@ -50,6 +63,7 @@ public class InventoryScreen implements Screen {
 		comic = gameScreen.renderer.comic;
 		arial = gameScreen.renderer.arial;
 		fontShader = gameScreen.renderer.fontShader;
+		playerItems = gameScreen.world.player.inventory.getItems();
 	}
 
 	@Override
@@ -77,10 +91,58 @@ public class InventoryScreen implements Screen {
 		comic.draw(batch, "AGI", widthUnit * (statsPos.x - 1), heightUnit * (statsPos.y - 1.95f));
 		comic.draw(batch, "WIS", widthUnit * (statsPos.x - 1), heightUnit * (statsPos.y - 2.95f));
 		batch.setShader(null);
+		
+		drawItems(batch);
 		batch.end();
 		
 		stage.draw();
 	}
+	
+	private void drawItems(SpriteBatch batch) {
+		for (int row = 0; row < playerItems.length; ++row) {
+			for (int col = 0; col < playerItems[row].length; ++col) {
+				Item item = playerItems[row][col];
+				
+				if (item == null)
+					continue;
+					
+				switch (item.getItemClass()) {
+				case CONSUMABLE:
+					drawConsumable(batch, (Consumable) item, col, row);
+					break;
+				case WEARABLE:
+					drawWearable(batch, (Wearable) item, col, row);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	
+	private void drawConsumable(SpriteBatch batch, Consumable consumable, int x, int y) {
+		switch (consumable.getConsumableType()) {
+		case HP_POTION:
+			drawTextureRegionItem(batch, skin.getRegion("hppotion"), x, y);
+			break;
+		case MP_POTION:
+			drawTextureRegionItem(batch, skin.getRegion("mppotion"), x, y);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void drawWearable(SpriteBatch batch, Wearable wearable, int x, int y) {
+		
+	}
+	
+	private void drawTextureRegionItem(SpriteBatch batch, TextureRegion region, int slotX, int slotY) {
+		Button slot = itemSlots[slotX][slotY];
+		batch.draw(region, slot.getX() + slot.getWidth() / worldUnit.x, slot.getY() + slot.getHeight() / worldUnit.y, 
+				widthUnit, heightUnit);
+	}
+
 
 	@Override
 	public void resize(int width, int height) {
@@ -98,7 +160,12 @@ public class InventoryScreen implements Screen {
 		leftHandSlot.setBounds(widthUnit * 6.5f, heightUnit * 8.5f, widthUnit, heightUnit);
 		rightHandSlot.setBounds(widthUnit * 9.5f, heightUnit * 8.5f, widthUnit, heightUnit);
 		
-		positiveButton.setBounds(widthUnit, heightUnit, widthUnit, heightUnit);
+		addButtonStr.setBounds(widthUnit * (statsPos.x + 1), heightUnit * (statsPos.y), widthUnit, heightUnit);
+		addButtonDex.setBounds(widthUnit * (statsPos.x + 1), heightUnit * (statsPos.y - 1), widthUnit, heightUnit);
+		addButtonVit.setBounds(widthUnit * (statsPos.x + 1), heightUnit * (statsPos.y - 2), widthUnit, heightUnit);
+		addButtonAgi.setBounds(widthUnit * (statsPos.x + 1), heightUnit * (statsPos.y - 3), widthUnit, heightUnit);
+		addButtonWis.setBounds(widthUnit * (statsPos.x + 1), heightUnit * (statsPos.y - 4), widthUnit, heightUnit);
+		
 		resumeButton.setBounds(widthUnit * 15f, heightUnit * 11f, widthUnit, heightUnit);
 		setItemSlotsPosition(widthUnit, heightUnit);
 	}
@@ -107,7 +174,7 @@ public class InventoryScreen implements Screen {
 	public void show() {
 		atlas = new TextureAtlas("graphics/inventorytextures.pack");
 		skin = new Skin(atlas);
-		
+
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		
@@ -122,7 +189,12 @@ public class InventoryScreen implements Screen {
 		leftHandSlot = new Button(skin.getDrawable("equipmentslotnormal"), skin.getDrawable("equipmentslotpressed"));
 		rightHandSlot = new Button(skin.getDrawable("equipmentslotnormal"), skin.getDrawable("equipmentslotpressed"));
 		
-		positiveButton = new Button(skin.getDrawable("positivebuttonnormal"), skin.getDrawable("positivebuttonpressed"));	
+		addButtonStr = new Button(skin.getDrawable("positivebuttonnormal"), skin.getDrawable("positivebuttonpressed"));
+		addButtonDex = new Button(skin.getDrawable("positivebuttonnormal"), skin.getDrawable("positivebuttonpressed"));
+		addButtonVit = new Button(skin.getDrawable("positivebuttonnormal"), skin.getDrawable("positivebuttonpressed"));
+		addButtonAgi = new Button(skin.getDrawable("positivebuttonnormal"), skin.getDrawable("positivebuttonpressed"));
+		addButtonWis = new Button(skin.getDrawable("positivebuttonnormal"), skin.getDrawable("positivebuttonpressed"));
+		
 		resumeButton = new Button(skin.getDrawable("resumebuttonnormal"), skin.getDrawable("resumebuttonpressed"));
 		
 		stage.addActor(bodySlot);
@@ -131,7 +203,11 @@ public class InventoryScreen implements Screen {
 		stage.addActor(headSlot);
 		stage.addActor(leftHandSlot);
 		stage.addActor(rightHandSlot);
-		stage.addActor(positiveButton);
+		stage.addActor(addButtonStr);
+		stage.addActor(addButtonDex);
+		stage.addActor(addButtonVit);
+		stage.addActor(addButtonAgi);
+		stage.addActor(addButtonWis);
 		stage.addActor(resumeButton);
 		
 		initializeItemSlots();
@@ -157,6 +233,7 @@ public class InventoryScreen implements Screen {
 			for (int col = 0; col < itemSlots[row].length; ++col) {
 				itemSlots[row][col].setBounds((startingPosX * widthUnit) + (width * col), 
 						(startingPosY * heightUnit) + (height * row), width, height);
+				itemSlots[row][col].align(Align.center);
 			}
 		}
 	}
