@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.nickan.epiphany3D.model.items.Inventory;
 
 public class InventoryController {
@@ -15,6 +16,7 @@ public class InventoryController {
 		initializeButtons();
 		
 		// The heck is this??? (Poor system design)
+		inventory = screen.playerInventory;
 	}
 
 	private void initializeButtons() {
@@ -27,10 +29,11 @@ public class InventoryController {
 	private void initializeEquipmentSlot() {
 		screen.bodySlot.addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
+				return true; 
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				
 				
 			}
 		});
@@ -91,19 +94,24 @@ public class InventoryController {
 		Button[][] itemSlots = screen.itemSlots;
 		for (int row = 0; row < itemSlots.length; ++row) {
 			for (int col = 0; col < itemSlots[row].length; ++col) {
-				itemSlots[row][col].addListener(new InputListener() {
-					public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-						return true;
-					}
-
-					public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				itemSlots[row][col].addListener(new ClickListener() {			
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						int indexY = (int) ((event.getStageX() - screen.startingX) / screen.width);
+						int indexX = (int) ((event.getStageY() - screen.startingY) / screen.height);
 						
+						// Considered a single click
+						if (getTapCount() % 2 == 1) {
+							inventory.singleClicked(indexX, indexY);
+						} else {
+							inventory.doubleClicked(indexX, indexY);
+						}
 					}
 				} );
 			}
 		}
+		
 	}
-	
 	
 	private void initializeAddButtons() {
 		screen.addButtonStr.addListener(new InputListener() {
