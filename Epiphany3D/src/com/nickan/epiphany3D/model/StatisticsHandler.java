@@ -14,46 +14,37 @@ public class StatisticsHandler {
 	public float currentMp;
 
 	// The bases fields will be used for balancing (if that will happen)
-	public float baseStr = 1;
-	public float baseDex = 1;
-	public float baseVit = 1;
-	public float baseAgi = 1;
-	public float baseWis = 1;
-
-	public float totalStr;
-	public float totalDex;
-	public float totalVit;
-	public float totalAgi;
-	public float totalWis;
-
+	public float baseStr;
+	public float baseDex;
+	public float baseVit;
+	public float baseAgi;
+	public float baseWis;
 
 	// Sub status
 	public int sightRange = 5;
 	public int attackRange = 1;
-
-	public float baseAtkDmg = 0;
-	public float baseAtkSpd = 0;
-	public float baseHit = 0;
-	public float baseAvoid = 0;
-	public float baseDef = 0;
-	public float baseCrit = 0;
-	public float baseFullHp = 100;
-	public float baseFullMp = 100;
-
-	public float totalAtkDmg;
-	public float totalAtkSpd;
-	public float totalHit;
-	public float totalAvoid;
-	public float totalDef;
-	public float totalCrit;
-	public float totalFullHp;
-	public float totalFullMp;
 
 	float hitChance = 80;
 
 	public float attackDelay = 1.5f;
 	
 	private int hpDamage;
+	
+	// New implementation;
+	float addedStr;
+	float addedDex;
+	float addedVit;
+	float addedAgi;
+	float addedWis;
+	
+	float addedAtkDmg;
+	float addedAtkSpd;
+	float addedHit;
+	float addedAvoid;
+	float addedDef;
+	float addedCrit;
+	float addedHp;
+	float addedMp;
 
 	public StatisticsHandler() {
 		baseStr = 10;
@@ -62,9 +53,10 @@ public class StatisticsHandler {
 		baseAgi = 100;
 		baseWis = 10;
 		
-		resetStats();
-		initializeStatus();
-		applyFinalStats();
+		resetAddedAttributes();
+		calcFinalAttributes();
+		currentHp = getFullHp();
+		currentMp = getFullMp();
 	}
 
 	public StatisticsHandler(float baseStr, float baseDex, float baseVit, float baseAgi, float baseWis) {
@@ -73,14 +65,10 @@ public class StatisticsHandler {
 		this.baseVit = baseVit;
 		this.baseAgi = baseAgi;
 		this.baseWis = baseWis;
-		
-		initializeStatus();
-		resetStats();
-		applyFinalStats();
 	}
 	
 	/**
-	 * For testing, making the character a bit more buff
+	 * For testing, making the character a bit more buffed
 	 */
 	public void whosYourDaddy() {
 		baseStr = 100;
@@ -88,74 +76,90 @@ public class StatisticsHandler {
 		baseVit = 100;
 		baseAgi = 100;
 		baseWis = 100;
-		resetStats();
-		initializeStatus();
-		applyFinalStats();
 	}
-
-	/**
-	 * The default base values of the base statistics
-	 */
-	protected void initializeStatus() {
-		baseAtkDmg = 10;
-		baseAtkSpd = 10;
-		baseHit = 10;
-		baseAvoid = 10;
-		baseDef = 10;
-		baseCrit = 10;
+	
+	public void resetAddedAttributes() {
+		addedStr = 0;
+		addedDex = 0;
+		addedVit = 0;
+		addedAgi = 0;
+		addedWis = 0;
 		
-		baseFullHp = totalVit * 3;
-		baseFullMp = totalWis * 3;
+		addedAtkDmg = 0;
+		addedAtkSpd = 0;
+		addedHit = 0;
+		addedAvoid = 0;
+		addedDef = 0;
+		addedCrit = 0;
+		addedHp = 0;
+		addedMp = 0;
 	}
-
-	/**
-	 * Should be called prior to equipping a weapon, to apply bonuses correctly
-	 */
-	void resetStats() {
-		totalStr = baseStr;
-		totalAgi = baseAgi;
-		totalDex = baseDex;
-		totalVit = baseVit;
-		totalWis = baseWis;
-
-		totalAtkDmg = baseAtkDmg;
-		totalAtkSpd = baseAtkSpd;
-		totalHit = baseHit;
-		totalAvoid = baseAvoid;
-		totalDef = baseDef;
-		totalCrit = baseCrit;
-		totalFullHp = currentHp = baseFullHp;
-		totalFullMp = currentMp = baseFullMp;
-	}
-
-	/**
-	 * Finalizing the total statistics bonuses
-	 */
-	void applyFinalStats() {
-		totalAtkDmg += totalStr;
-		totalHit += totalDex;
-		totalAvoid += totalAgi;
-		totalDef += totalVit;
-		totalCrit += totalDex;
-
+	
+	public void calcFinalAttributes() {
 		computeAttackDelay();
 	}
-
+	
+	public float getStr() {
+		return baseStr + addedStr;
+	}
+	
+	public float getAgi() {
+		return baseAgi + addedAgi;
+	}
+	
+	public float getDex() {
+		return baseDex + addedDex;
+	}
+	
+	public float getVit() {
+		return baseVit + addedVit;
+	}
+	
+	public float getWis() {
+		return baseWis + addedWis;
+	}
+	
+	public float getAttackDmg() {
+		return ((baseStr + addedStr) * 2) + addedAtkDmg;
+	}
+	
+	public float getAttackSpd() {
+		return (baseAgi + addedAgi) + addedAtkSpd;
+	}
+	
+	public float getAvoid() {
+		return (baseAgi + addedAgi) + addedAvoid;
+	}
+	
+	public float getAttackHit() {
+		return (baseDex + addedDex) + addedHit;
+	}
+	
+	public float getAttackCrit() {
+		return (baseDex + addedDex) + addedCrit;
+	}
+	
+	public float getDef() {
+		return (baseVit + addedVit) + addedDef;
+	}
+	
+	public float getFullHp() {
+		return ((baseVit + addedVit) * 3) + addedHp;
+	}
+	
+	public float getFullMp() {
+		return ((baseWis + addedWis) * 3) + addedMp;
+	}
+	
 	/**
 	 * Computes the attack delay, Should be called with updateAnimationAtkHitTime to synchronize the attack and attack animation of the Character.
-	 * The formula might be changed in the future (As if)
+	 * The formula might be changed in the future, should really limit the attack speed computation to 150 totalAgi
 	 */
 	private void computeAttackDelay() {
 		final float MAX_ATTACK_DELAY = 1.5f;
 		final float MIN_ATTACK_DELAY = 0.3f;
-		final float CAP_TOTAL_AGI = 150;
-
-		// For the manipulation of the attack delay
-		float delayPercentage = (totalAgi / CAP_TOTAL_AGI) + (totalAtkSpd / 100);
-		attackDelay = MAX_ATTACK_DELAY - ((MAX_ATTACK_DELAY - MIN_ATTACK_DELAY) * delayPercentage);
-
-		// The totalAtkSpd is the percentage of the attack speed depending on the CAP_TOTAL_AGI
-		totalAtkSpd = (delayPercentage * 100);
+		final float attackDelayThreshold = MAX_ATTACK_DELAY - MIN_ATTACK_DELAY;
+		attackDelay = attackDelayThreshold * getAttackSpd();
 	}
 
 	public void addBaseStr() {
@@ -181,7 +185,7 @@ public class StatisticsHandler {
 	public void addBaseWis() {
 		baseWis++;
 		remainingStatusPoints--;
-	}
+	}		
 
 
 	void gainExperience(int enemyLevel) {
@@ -199,21 +203,17 @@ public class StatisticsHandler {
 	}
 
 	void levelUp() {
-		baseAtkDmg++;
-		baseAtkSpd++;
-		baseHit++;
-		baseAvoid++;
-		baseDef++;
-		baseCrit++;
-		baseFullHp += 10;
-		baseFullMp += 10;
-		level++;
-		remainingStatusPoints = 5;
+		++baseStr;
+		++baseDex;
+		++baseVit;
+		++baseAgi;
+		++level;
+		remainingStatusPoints = 10;
 	}
 	
 	
 	public void applyDamage(int damage) {
-		hpDamage = (int) (damage - totalDef);
+		hpDamage = (int) (damage - getDef());
 		if (hpDamage < 1) {
 			hpDamage = 1;
 		}
@@ -226,6 +226,14 @@ public class StatisticsHandler {
 	
 	public boolean isAlive() {
 		return (currentHp < 1) ? false: true;
+	}
+	
+	public boolean isCurrentHpFull() {
+		return (currentHp < getFullHp()) ? false : true;
+	}
+	
+	public boolean isCurrentMpFull() {
+		return (currentMp < getFullMp()) ? false : true;
 	}
 	
 }
