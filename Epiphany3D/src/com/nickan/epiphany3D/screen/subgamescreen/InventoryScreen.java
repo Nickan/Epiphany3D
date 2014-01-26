@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.items.Consumable;
+import com.nickan.epiphany3D.model.items.Inventory;
 import com.nickan.epiphany3D.model.items.Item;
 import com.nickan.epiphany3D.model.items.Wearable;
 import com.nickan.epiphany3D.screen.GameScreen;
@@ -45,13 +46,18 @@ public class InventoryScreen implements Screen {
 	Skin skin;
 	GameScreen gameScreen;
 	Epiphany3D game;
-	InventoryController inventory;
+	InventoryController inventoryCtrl;
+	Inventory playerInventory;
 	BitmapFont comic;
 	BitmapFont arial;
 	ShaderProgram fontShader;
 	
 	float widthUnit;
 	float heightUnit;
+	float startingX;
+	float startingY;
+	float width;
+	float height;
 	Vector2 statsPos = new Vector2(1.5f, 8.5f);
 	Item[][] playerItems;
 	
@@ -64,6 +70,7 @@ public class InventoryScreen implements Screen {
 		arial = gameScreen.renderer.arial;
 		fontShader = gameScreen.renderer.fontShader;
 		playerItems = gameScreen.world.player.inventory.getItems();
+		playerInventory = gameScreen.world.player.inventory;
 	}
 
 	@Override
@@ -211,7 +218,7 @@ public class InventoryScreen implements Screen {
 		stage.addActor(resumeButton);
 		
 		initializeItemSlots();
-		inventory = new InventoryController(this);
+		inventoryCtrl = new InventoryController(this);
 	}
 
 	private void initializeItemSlots() {
@@ -226,8 +233,11 @@ public class InventoryScreen implements Screen {
 	private void setItemSlotsPosition(float widthUnit, float heightUnit) {
 		float startingPosX = 6.05f;
 		float startingPosY = .3f;
-		float width = widthUnit + (widthUnit / 5.1f);
-		float height = heightUnit + (heightUnit / 2.4f);
+		width = widthUnit + (widthUnit / 5.1f);
+		height = heightUnit + (heightUnit / 2.4f);
+		
+		startingX = startingPosX * widthUnit;
+		startingY = startingPosY * heightUnit;
 		
 		for (int row = 0; row < itemSlots.length; ++row) {
 			for (int col = 0; col < itemSlots[row].length; ++col) {
