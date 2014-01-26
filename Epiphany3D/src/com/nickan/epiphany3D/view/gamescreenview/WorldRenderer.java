@@ -193,9 +193,6 @@ public class WorldRenderer {
 		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
 		}
 		
-		hudRenderer = new HudRenderer(arial, comic);
-		hudRenderer.enemy = world.enemies.get(0);
-		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		stage.clear();
 		
@@ -211,6 +208,10 @@ public class WorldRenderer {
 		stage.addActor(pauseButton);
 		
 		spriteBatch = (SpriteBatch) stage.getSpriteBatch();
+		
+		hudRenderer = new HudRenderer(arial, comic);
+		hudRenderer.enemy = world.enemies.get(0);
+		hudRenderer.player = world.player;
 		hudRenderer.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
