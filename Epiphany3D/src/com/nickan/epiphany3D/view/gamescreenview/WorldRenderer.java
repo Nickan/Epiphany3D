@@ -176,7 +176,7 @@ public class WorldRenderer {
 		arial = new BitmapFont(Gdx.files.internal("graphics/fonts/arial.fnt"));
 		arial.setUseIntegerPositions(false);
 //		arial.setColor(Color.BLUE);
-		arial.setScale(2);
+//		arial.setScale(.5f);
 		
 		Texture texture = new Texture(Gdx.files.internal("graphics/fonts/comic.png"), true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);

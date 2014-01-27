@@ -4,8 +4,11 @@ import com.badlogic.gdx.Game;
 import com.nickan.epiphany3D.screen.GameScreen;
 
 public class Epiphany3D extends Game {
-	public static boolean debug = true;
+	public static boolean debug = false;
 	public GameScreen gameScreen;
+	
+	public static final float WIDTH = 480;
+	public static final float HEIGHT = 320;
 
 	@Override
 	public void create() {

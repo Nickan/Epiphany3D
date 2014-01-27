@@ -13,7 +13,7 @@ import com.nickan.framework1_0.pathfinder1_0.PathFinder;
 public class World {
 	WorldRenderer renderer;
 
-	Player player;
+	public Player player;
 	static final int tileWidth = 200;
 	static final int tileHeight = 200;
 	public static final PathFinder pathFinder = new PathFinder(tileWidth, tileHeight);
@@ -37,6 +37,13 @@ public class World {
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
 //		player.statsHandler.whosYourDaddy();
+		
+		// Testing the potion
+//		player.statsHandler.currentHp = 50;
+//		player.statsHandler.currentMp = 50;
+		System.out.println("Player current Hp: " + player.statsHandler.currentMp);
+		System.out.println("Player current Hp: " + player.statsHandler.getFullMp());
+		
 		occupiedNodes.add(player.getNextNode());
 		enemies.clear();
 		

@@ -134,7 +134,7 @@ public class Character extends MoveableEntity {
 	private void attackHit() {
 		//...
 //		System.out.println("Attack hit");
-		MessageDispatcher.getInstance().dispatchMessage(this.id, enemyId, 0, Message.ATTACKED_BY_SENDER, statsHandler.totalAtkDmg);
+		MessageDispatcher.getInstance().dispatchMessage(this.id, enemyId, 0, Message.ATTACKED_BY_SENDER, statsHandler.getAttackDmg());
 	}
 	
 	public void applyDamage(int damage) {

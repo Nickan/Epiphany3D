@@ -70,7 +70,7 @@ public class HudRenderer {
 		hpBarSprite.draw(spriteBatch);
 
 		// Current Hp
-		float fracCurrentHp = enemy.statsHandler.currentHp / enemy.statsHandler.totalFullHp;
+		float fracCurrentHp = enemy.statsHandler.currentHp / enemy.statsHandler.getFullHp();
 		hpBarSprite.setColor(Color.LIGHT_GRAY);
 		hpBarSprite.setBounds(hpBarPosX, hpBarPosY, hpBarWidth * fracCurrentHp, hpBarHeight);
 		hpBarSprite.draw(spriteBatch);
@@ -88,7 +88,7 @@ public class HudRenderer {
 		hpBarSprite.draw(spriteBatch);
 
 		// Current Hp
-		float fracCurrentHp = player.statsHandler.currentHp / player.statsHandler.totalFullHp;
+		float fracCurrentHp = player.statsHandler.currentHp / player.statsHandler.getFullHp();
 		hpBarSprite.setColor(Color.YELLOW);
 		hpBarSprite.setBounds(1, hpBarPosY, hpWidth * fracCurrentHp, hpHeight);
 		hpBarSprite.draw(spriteBatch);
@@ -99,7 +99,7 @@ public class HudRenderer {
 		hpBarSprite.draw(spriteBatch);
 
 		// Current Hp
-		float fracCurrentMp = player.statsHandler.currentMp / player.statsHandler.totalFullMp;
+		float fracCurrentMp = player.statsHandler.currentMp / player.statsHandler.getFullMp();
 		hpBarSprite.setColor(Color.BLUE);
 		hpBarSprite.setBounds(1, hpBarPosY - hpHeight * 1.5f, hpWidth * fracCurrentMp, hpHeight);
 		hpBarSprite.draw(spriteBatch);

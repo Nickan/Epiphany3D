@@ -15,7 +15,7 @@ import com.nickan.epiphany3D.model.ArtificialIntelligence;
 import com.nickan.epiphany3D.model.Player;
 import com.nickan.epiphany3D.model.messagingsystem.MessageDispatcher;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
-import com.nickan.epiphany3D.screen.subgamescreen.InventoryScreen;
+import com.nickan.epiphany3D.screen.InventoryScreen;
 import com.nickan.framework1_0.math.LineAABB;
 import com.nickan.framework1_0.pathfinder1_0.Node;
 
