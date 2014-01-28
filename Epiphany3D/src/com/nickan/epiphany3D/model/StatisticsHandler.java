@@ -14,11 +14,11 @@ public class StatisticsHandler {
 	public float currentMp;
 
 	// The bases fields will be used for balancing (if that will happen)
-	public float baseStr;
-	public float baseDex;
-	public float baseVit;
-	public float baseAgi;
-	public float baseWis;
+	float baseStr;
+	float baseDex;
+	float baseVit;
+	float baseAgi;
+	float baseWis;
 
 	// Sub status
 	public int sightRange = 5;
@@ -40,9 +40,9 @@ public class StatisticsHandler {
 	float addedAtkDmg;
 	float addedAtkSpd;
 	float addedHit;
-	float addedAvoid;
+	float addedAvd;
 	float addedDef;
-	float addedCrit;
+	float addedCrt;
 	float addedHp;
 	float addedMp;
 
@@ -50,7 +50,7 @@ public class StatisticsHandler {
 		baseStr = 10;
 		baseDex = 10;
 		baseVit = 10;
-		baseAgi = 100;
+		baseAgi = 10;
 		baseWis = 10;
 		
 		resetAddedAttributes();
@@ -68,7 +68,7 @@ public class StatisticsHandler {
 	}
 	
 	/**
-	 * For testing, making the character a bit more buffed
+	 * For testing, making the character a bit more buff
 	 */
 	public void whosYourDaddy() {
 		baseStr = 100;
@@ -76,9 +76,19 @@ public class StatisticsHandler {
 		baseVit = 100;
 		baseAgi = 100;
 		baseWis = 100;
+		
+		resetAddedAttributes();
+		calcFinalAttributes();
+		currentHp = getFullHp();
+		currentMp = getFullMp();
 	}
 	
+	/**
+	 * Should be called prior to applying all of the added attributes
+	 */
 	public void resetAddedAttributes() {
+		final int defaultAddedHp = 200;
+		
 		addedStr = 0;
 		addedDex = 0;
 		addedVit = 0;
@@ -88,13 +98,16 @@ public class StatisticsHandler {
 		addedAtkDmg = 0;
 		addedAtkSpd = 0;
 		addedHit = 0;
-		addedAvoid = 0;
+		addedAvd = 0;
 		addedDef = 0;
-		addedCrit = 0;
-		addedHp = 0;
+		addedCrt = 0;
+		addedHp = 0 + defaultAddedHp;
 		addedMp = 0;
 	}
 	
+	/**
+	 * Should be called after applying the added attributes
+	 */
 	public void calcFinalAttributes() {
 		computeAttackDelay();
 	}
@@ -128,7 +141,7 @@ public class StatisticsHandler {
 	}
 	
 	public float getAvoid() {
-		return (baseAgi + addedAgi) + addedAvoid;
+		return (baseAgi + addedAgi) + addedAvd;
 	}
 	
 	public float getAttackHit() {
@@ -136,7 +149,7 @@ public class StatisticsHandler {
 	}
 	
 	public float getAttackCrit() {
-		return (baseDex + addedDex) + addedCrit;
+		return (baseDex + addedDex) + addedCrt;
 	}
 	
 	public float getDef() {
@@ -152,14 +165,13 @@ public class StatisticsHandler {
 	}
 	
 	/**
-	 * Computes the attack delay, Should be called with updateAnimationAtkHitTime to synchronize the attack and attack animation of the Character.
-	 * The formula might be changed in the future, should really limit the attack speed computation to 150 totalAgi
+	 * Computes the attack delay of the character
 	 */
 	private void computeAttackDelay() {
 		final float MAX_ATTACK_DELAY = 1.5f;
-		final float MIN_ATTACK_DELAY = 0.3f;
+		final float MIN_ATTACK_DELAY = 0.1f;
 		final float attackDelayThreshold = MAX_ATTACK_DELAY - MIN_ATTACK_DELAY;
-		attackDelay = attackDelayThreshold * getAttackSpd();
+		attackDelay = MAX_ATTACK_DELAY - (attackDelayThreshold * getAttackSpd() / 100);
 	}
 
 	public void addBaseStr() {
@@ -234,6 +246,60 @@ public class StatisticsHandler {
 	
 	public boolean isCurrentMpFull() {
 		return (currentMp < getFullMp()) ? false : true;
+	}
+	
+	
+	// Methods for adding attributes from equipment or from sources
+	public void addAddedStr(int str) {
+		addedStr += str;
+	}
+	
+	public void addAddedDex(int dex) {
+		addedDex += dex;
+	}
+	
+	public void addAddedVit(int vit) {
+		addedVit += vit;
+	}
+	
+	public void addAddedAgi(int agi) {
+		addedAgi += agi;
+	}
+	
+	public void addAddedWis(int wis) {
+		addedWis += wis;
+	}
+	
+	public void addAddedAtkDmg(int dmg) {
+		addedAtkDmg += dmg;
+	}
+	
+	public void addAddedAtkSpd(float spd) {
+		addedAtkSpd += spd;
+	}
+	
+	public void addAddedAvd(int avd) {
+		addedAvd += avd;
+	}
+	
+	public void addAddedHit(int hit) {
+		addedHit += hit;
+	}
+	
+	public void addAddedCrt(float crt) {
+		addedCrt += crt;
+	}
+	
+	public void addAddedDef(int def) {
+		addedDef += def;
+	}
+	
+	public void addAddedHp(int hp) {
+		addedHp += hp;
+	}
+	
+	public void addAddedMp(int mp) {
+		addedMp += mp;
 	}
 	
 }
