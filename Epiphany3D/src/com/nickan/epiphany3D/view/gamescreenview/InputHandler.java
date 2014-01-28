@@ -100,21 +100,29 @@ public class InputHandler implements InputProcessor {
 		CameraController camCtrl = world.camController;
 		Ray ray = camCtrl.cam.getPickRay(screenX, screenY);
 
-		// Get how many times the direction.y has to be multiplied to make the exact opposite value of origin.y
-		// To determine the tiles being clicked, y-axis as the surface (Making the y-axis zero)
-		float mul = -ray.origin.y / ray.direction.y;
-		Vector3 dest = new Vector3();
-		dest.set(ray.direction);
-		dest.scl(mul);
-		// The origin should be added to locate the clicked area
-		dest.add(ray.origin);
-
+		// Get how many times the direction.y to reach the ground (y = 0) from the origin.y
+		float mul = Math.abs(ray.origin.y / ray.direction.y);
+		
+		// Then multiply all of the axis from the result to get the clicked surface
+		Vector3 dest = new Vector3(ray.origin).add(ray.direction.scl(mul));
+		
+		dest.set((int) dest.x + 0.5f, 0.001f, (int) dest.z + 0.5f);
+		world.cursor.set(dest);
+		
+		
 		// Check if the character is clicked
 		ArtificialIntelligence enemy = getClickedEnemy(ray.origin, dest);
+		world.renderer.hudRenderer.enemy = enemy;
 
 		if (enemy != null) {
 			processClickedEnemy(enemy, screenX, screenY);
 		} else {
+			
+			// Cancels showing clicked enemy
+			if (world.renderer.clickedCharacter != null) {
+				world.renderer.instances.add(world.renderer.clickedCharacter);
+				world.renderer.clickedCharacter = null;
+			}
 
 			// Preventing to path find those areas that are not included in path finding node list
 			if (dest.x < 0 || dest.z < 0 || dest.x >= 100 || dest.z >= 100)
@@ -124,6 +132,7 @@ public class InputHandler implements InputProcessor {
 				world.player.pathFindWalkableNode((int) dest.x, (int) dest.z);
 			}
 		}
+		
 
 		return true;
 	}
@@ -145,6 +154,8 @@ public class InputHandler implements InputProcessor {
 			}
 		} else {
 			// Show name and status
+			world.renderer.clickedCharacter = enemy.getModelInstance();
+			world.renderer.instances.removeValue(enemy.getModelInstance(), true);
 		}
 	}
 

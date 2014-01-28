@@ -45,6 +45,7 @@ public class WorldRenderer {
 
 	ModelInstance player;
 	ModelInstance zombie;
+	ModelInstance clickedCharacter = null;
 
 	private boolean loading;
 
@@ -72,6 +73,7 @@ public class WorldRenderer {
 	Button pauseButton;
 	TextureAtlas atlas;
 	Skin skin;
+	ModelInstance cursor;
 
 	public WorldRenderer(World world) {
 		this.world = world;
@@ -94,6 +96,8 @@ public class WorldRenderer {
 		assets.load("graphics/scene.g3db", Model.class);
 		assets.load("graphics/zombie.g3db", Model.class);
 		assets.load("graphics/player.g3db", Model.class);
+		
+		assets.load("graphics/cursor.g3db", Model.class);
 
 		loading = true;
 
@@ -112,14 +116,24 @@ public class WorldRenderer {
 
 		Vector3 lightPos = world.player.getPosition();
 		lights.position.set(lightPos.x, lightPos.y + 2, lightPos.z);
-
+		
 		instanceManager.update(instances, lightPos);
-
+		
+		if (hudRenderer.enemy != null && loading == false)
+			world.cursor.set(hudRenderer.enemy.getPosition().x, 0.001f, hudRenderer.enemy.getPosition().z);
+		
 		batch.begin(cam);
 
 		if (!loading) {
+			cursor.transform.setToTranslation(world.cursor.x, world.cursor.y, world.cursor.z);
+			
 			for (ModelInstance instance: instances)
 				batch.render(instance, environment);
+			
+			if (clickedCharacter != null)
+				batch.render(clickedCharacter);
+			
+			batch.render(cursor);
 		}
 		batch.end();
 		
@@ -148,6 +162,7 @@ public class WorldRenderer {
 			instances.add(tempInstance);
 		}
 		
+
 		instances.add(player);
 
 		Model model = assets.get("graphics/scene.g3db", Model.class);
@@ -168,6 +183,9 @@ public class WorldRenderer {
 				instances.add(instance);
 			}
 		}
+		
+		cursor = new ModelInstance(assets.get("graphics/cursor.g3db", Model.class));
+//		instances.add(cursor);
 		
 		loading = false;
 	}
@@ -243,6 +261,8 @@ public class WorldRenderer {
 		shapeRenderer.translate(position.x, position.y, position.z);
 		shapeRenderer.box(-dimension.width / 2, 0, -dimension.depth / 2, dimension.width, dimension.height, -dimension.depth);
 	}
+	
+	
 
 	public void resize(int width, int height) {
 		stage.setViewport(width, height);

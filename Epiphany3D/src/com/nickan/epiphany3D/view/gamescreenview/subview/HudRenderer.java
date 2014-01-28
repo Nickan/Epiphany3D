@@ -47,7 +47,7 @@ public class HudRenderer {
 		enemyNameLabel = new Label("Enemy", ls);
 		enemyNameLabel.setHeight(hpBarHeight);
 
-		hpBarTexture = new Texture(Gdx.files.internal("graphics/hpBar.png"), true);
+		hpBarTexture = new Texture(Gdx.files.internal("graphics/hpbar.png"), true);
 		hpBarTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		hpBarSprite = new Sprite(hpBarTexture);

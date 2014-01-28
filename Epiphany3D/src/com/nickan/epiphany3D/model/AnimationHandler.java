@@ -45,8 +45,10 @@ public class AnimationHandler {
 	public float attackPlaySpeed;
 	private boolean firstAttack = true;
 	private boolean attackUpdated = false;
+	private ModelInstance instance;
 
 	public AnimationHandler(ModelInstance instance, float standingFrameNum, float runningFrameNum, float attackingFrameNum) {
+		this.instance = instance;
 		aniController = new AnimationController(instance);
 
 		standingPlaySpeed = standingFrameNum / DEFAULT_FPS;
@@ -234,6 +236,10 @@ public class AnimationHandler {
 			}
 			
 		});
+	}
+	
+	public ModelInstance getModelInstance() {
+		return instance;
 	}
 	
 	boolean killed = false;
