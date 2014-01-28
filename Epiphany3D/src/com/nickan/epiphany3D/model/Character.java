@@ -117,7 +117,10 @@ public class Character extends MoveableEntity {
 	 * Should only be called when the enemy is in attack range
 	 */
 	public boolean targetHit() {
-		switch (attackHandler.getAttackStatus(statsHandler.hitChance, statsHandler.attackDelay, Gdx.graphics.getDeltaTime())) {
+		Character enemy = (Character) EntityManager.getInstance().getEntity(enemyId);
+		float hitChance = (statsHandler.getAttackHit() / enemy.statsHandler.getAttackHit()) * 100;
+		
+		switch (attackHandler.getAttackStatus(hitChance, statsHandler.attackDelay, Gdx.graphics.getDeltaTime())) {
 		case HIT:
 			attackHit();
 			return true;
