@@ -2,6 +2,7 @@ package com.nickan.epiphany3D.model.items;
 
 import com.nickan.epiphany3D.model.StatisticsHandler;
 import com.nickan.epiphany3D.model.items.Consumable.ConsumableType;
+import com.nickan.epiphany3D.model.items.Wearable.WearableType;
 
 public class Inventory {
 	private static final int ROW = 4;
@@ -10,6 +11,12 @@ public class Inventory {
 	StatisticsHandler statsHandler;
 	
 	Consumable consumableBeingUsed = null;
+	Wearable helm = null;
+	Wearable armor = null;
+	Wearable leftHand = null;
+	Wearable rightHand = null;
+	Wearable gloves = null;
+	Wearable boots = null;
 
 	public Inventory(StatisticsHandler statsHandler) {
 		this.statsHandler = statsHandler;
@@ -17,6 +24,22 @@ public class Inventory {
 		
 		// Testing
 		items[0][0] = new Consumable(ConsumableType.MP_POTION, 15, 3);
+		items[3][0] = new Wearable(WearableType.HELM).setMainAttributeBonus(5, 5, 5, 5, 5).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
+		items[3][1] = new Wearable(WearableType.HELM).setMainAttributeBonus(4, 4, 4, 4, 4).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
+		items[3][2] = new Wearable(WearableType.ARMOR).setMainAttributeBonus(4, 4, 4, 4, 4).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
+		items[3][3] = new Wearable(WearableType.BOOTS).setMainAttributeBonus(4, 4, 4, 4, 4).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
+		items[3][4] = new Wearable(WearableType.LEFT_HAND).setMainAttributeBonus(4, 4, 4, 4, 4).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
+		items[3][5] = new Wearable(WearableType.RIGHT_HAND).setMainAttributeBonus(4, 4, 4, 4, 4).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
+		items[3][6] = new Wearable(WearableType.GLOVES).setMainAttributeBonus(4, 4, 4, 4, 4).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
+		items[3][7] = new Wearable(WearableType.BOOTS).setMainAttributeBonus(4, 4, 4, 4, 4).
+				setSubAttributeBonus(5, 5, 5, 5, 5, 5, 5, 5);
 	}
 
 	public void update(float delta) {
@@ -42,6 +65,57 @@ public class Inventory {
 	}
 	
 	private void wear(int row, int col) {
+		Wearable wearable = (Wearable) items[row][col];
+
+		switch (wearable.getWearableType()) {
+		case HELM:
+			helm = putToItemSlot(helm, row, col);
+			break;
+		case ARMOR:
+			armor = putToItemSlot(armor, row, col);
+			break;
+		case LEFT_HAND:
+			leftHand = putToItemSlot(leftHand, row, col);
+			break;
+		case RIGHT_HAND:
+			rightHand = putToItemSlot(rightHand, row, col);
+			break;
+		case GLOVES:
+			gloves = putToItemSlot(gloves, row, col);
+			break;
+		case BOOTS:
+			boots = putToItemSlot(boots, row, col);
+			break;
+		}
+	}
+	
+	/**
+	 * A generic method. Puts the currently equipped item to the item slot and tries to replace the currently equipped item.
+	 * If successful, it returns the clicked item then places the currently equipped item to item slots, 
+	 * else it will return the current equipped item (No change).
+	 * @param equippedItem
+	 * @param row
+	 * @param col
+	 * @return the item to be equipped
+	 */
+	private Wearable putToItemSlot(Wearable equippedItem, int row, int col) {
+		Wearable item = (Wearable) items[row][col];
+		if (equippedItem != null) {
+			if (putInInventory(equippedItem)) {
+				equippedItem.remove(statsHandler);
+				items[row][col] = null;
+				item.use(statsHandler);
+				return item;
+			}
+			
+			//...
+			System.out.println("No more space in item slots");
+			return equippedItem;
+		} else {
+			item.use(statsHandler);
+			items[row][col] = null;
+			return item;
+		}
 		
 	}
 	
@@ -72,13 +146,8 @@ public class Inventory {
 		}
 	}
 	
-	public final Item[][] getItems() {
-		return items;
-	}
-	
-	
-	public boolean putItem(Item item) {
-		for (int row = 0; row < items.length; ++row) {
+	public boolean putInInventory(Item item) {
+		for (int row = items.length - 1; row >= 0; --row) {
 			for (int col = 0; col < items[row].length; ++col) {
 				if (items[row][col] == null) {
 					items[row][col] = item;
@@ -98,6 +167,67 @@ public class Inventory {
 			}
 		}
 	}
+	
+	public void removeEquippedItem(Wearable wearable) {
+		if (!putInInventory(wearable)) {
+			//....
+			System.out.println("No more space in item slots");
+		}
 
+		switch (wearable.getWearableType()) {
+		case HELM:
+			helm.remove(statsHandler);
+			helm = null;
+			break;
+		case ARMOR:
+			armor.remove(statsHandler);
+			armor = null;
+			break;
+		case LEFT_HAND:
+			leftHand.remove(statsHandler);
+			leftHand = null;
+			break;
+		case RIGHT_HAND:
+			rightHand.remove(statsHandler);
+			rightHand = null;
+			break;
+		case GLOVES:
+			gloves.remove(statsHandler);
+			gloves = null;
+			break;
+		case BOOTS:
+			boots.remove(statsHandler);
+			boots = null;
+			break;
+		}
+	}
+	
+	public Wearable getHelm() {
+		return helm;
+	}
+	
+	public Wearable getArmor() {
+		return armor;
+	}
+	
+	public Wearable getLeftHand() {
+		return leftHand;
+	}
+	
+	public Wearable getRightHand() {
+		return rightHand;
+	}
+	
+	public Wearable getGloves() {
+		return gloves;
+	}
+	
+	public Wearable getBoots() {
+		return boots;
+	}
+	
+	public final Item[][] getItems() {
+		return items;
+	}
 
 }
