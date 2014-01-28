@@ -27,63 +27,100 @@ public class Controller {
 	}
 	
 	private void initializeEquipmentSlot() {
-		handler.bodySlot.addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true; 
-			}
+		handler.bodySlot.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Inventory inventory = handler.player.inventory;
+				if (inventory.getArmor() == null)
+					return;
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				
-				
+				// Considered a single click
+				if (getTapCount() % 2 == 1) {
+					
+				} else {
+					inventory.removeEquippedItem(inventory.getArmor());
+				}
 			}
 		});
 		
-		handler.footSlot.addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
+		handler.footSlot.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Inventory inventory = handler.player.inventory;
+				if (inventory.getBoots() == null)
+					return;
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				
+				// Considered a single click
+				if (getTapCount() % 2 == 1) {
+					
+				} else {
+					inventory.removeEquippedItem(inventory.getBoots());
+				}
 			}
 		});
 		
-		handler.glovesSlot.addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
+		handler.glovesSlot.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Inventory inventory = handler.player.inventory;
+				if (inventory.getGloves() == null)
+					return;
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				
+				// Considered a single click
+				if (getTapCount() % 2 == 1) {
+					
+				} else {
+					inventory.removeEquippedItem(inventory.getGloves());
+				}
 			}
 		});
 		
-		handler.headSlot.addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
+		handler.headSlot.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Inventory inventory = handler.player.inventory;
+				if (inventory.getHelm() == null)
+					return;
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				
+				// Considered a single click
+				if (getTapCount() % 2 == 1) {
+					
+				} else {
+					inventory.removeEquippedItem(inventory.getHelm());
+				}
 			}
 		});
 		
-		handler.leftHandSlot.addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
+		handler.leftHandSlot.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Inventory inventory = handler.player.inventory;
+				if (inventory.getLeftHand() == null)
+					return;
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				
+				// Considered a single click
+				if (getTapCount() % 2 == 1) {
+					
+				} else {
+					inventory.removeEquippedItem(inventory.getLeftHand());
+				}
 			}
 		});
 		
-		handler.rightHandSlot.addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				return true;
-			}
+		handler.rightHandSlot.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Inventory inventory = handler.player.inventory;
+				if (inventory.getRightHand() == null)
+					return;
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				// Considered a single click
+				if (getTapCount() % 2 == 1) {
+					
+				} else {
+					inventory.removeEquippedItem(inventory.getRightHand());
+					
+				}
 				
 			}
 		});
