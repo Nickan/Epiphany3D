@@ -33,16 +33,20 @@ public class World {
 	//...
 	FPSLogger logger = new FPSLogger();
 	CameraController camController;
+	Vector3 cursor = new Vector3(21.5f, 0.001f, 21.5f);
 
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
-//		player.statsHandler.whosYourDaddy();
+		player.statsHandler.whosYourDaddy();
+		System.out.println("Player's attack speed " + player.statsHandler.getAttackSpd());
+		System.out.println("Player attack delay " + player.statsHandler.attackDelay);
+		System.out.println("Player' Agi " + player.statsHandler.getAgi());
 		
 		// Testing the potion
 //		player.statsHandler.currentHp = 50;
 //		player.statsHandler.currentMp = 50;
-		System.out.println("Player current Hp: " + player.statsHandler.currentMp);
-		System.out.println("Player current Hp: " + player.statsHandler.getFullMp());
+		System.out.println("Player current Hp: " + player.statsHandler.currentHp);
+		System.out.println("Player current Hp: " + player.statsHandler.getFullHp());
 		
 		occupiedNodes.add(player.getNextNode());
 		enemies.clear();
@@ -67,6 +71,9 @@ public class World {
 			occupiedNodes.add(tempEnemy.getNextNode());
 		}
 //		enemies.add(enemy);
+		//... Testing
+		enemies.get(0).statsHandler.addAddedAgi(90);
+		enemies.get(0).statsHandler.calcFinalAttributes();
 	}
 
 	public void update(float delta) {

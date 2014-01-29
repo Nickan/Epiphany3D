@@ -43,7 +43,7 @@ public class AttackState implements BaseState<Character> {
 			}
 
 		}
-
+		
 		entity.move(Gdx.graphics.getDeltaTime());
 	}
 

@@ -22,8 +22,8 @@ public class Character extends MoveableEntity {
 	public String name = "Unnamed";
 
 	// Temporary values, might be changed later
-	public AttackHandler attackHandler;
-	public AnimationHandler aniHandler = null;
+	private AttackHandler attackHandler;
+	private AnimationHandler aniHandler = null;
 	public StatisticsHandler statsHandler;
 
 	// Making the status of the movable entity to be more readable
@@ -238,6 +238,10 @@ public class Character extends MoveableEntity {
 	
 	public void setKilled() {
 		aniHandler.playDead();
+	}
+	
+	public ModelInstance getModelInstance() {
+		return aniHandler.getModelInstance();
 	}
 
 }
