@@ -1,7 +1,11 @@
 package com.nickan.epiphany3D.view.gamescreenview;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
@@ -33,7 +37,13 @@ public class World {
 	//...
 	FPSLogger logger = new FPSLogger();
 	CameraController camController;
-	Vector3 cursor = new Vector3(21.5f, 0.001f, 21.5f);
+	Vector3 tileCursor = new Vector3(21.5f, 0.001f, 21.5f);
+	Vector2 cursor = new Vector2(100, 100);
+	Vector2 cursorVelocity = new Vector2();
+	Circle cursorCtrl;
+	Rectangle cursorCtl;
+	
+	Vector2 clickedArea = new Vector2();
 
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
@@ -84,14 +94,50 @@ public class World {
 
 		timePassed += delta;
 		camController.update(delta);
-
+		
+		updateCursor(delta);
 //		logger.log();
+	}
+	
+	private void updateCursor(float delta) {
+		if (cursor.x < 0) {
+			cursorVelocity.x = 0;
+			cursor.x = 1;
+		}
+		
+		if (cursor.x > Gdx.graphics.getWidth() - 5) {
+			cursorVelocity.x = 0;
+			cursor.x = Gdx.graphics.getWidth() - 5;
+		}
+		
+		if (cursor.y < 20) {
+			cursorVelocity.y = 0;
+			cursor.y = 20;
+		}
+		
+		if (cursor.y > Gdx.graphics.getHeight()) {
+			cursorVelocity.y = 0;
+			cursor.y = Gdx.graphics.getHeight();
+		}
+			
+		cursor.add(cursorVelocity.x * delta, cursorVelocity.y * delta);
 	}
 
 	private void updateEnemies(float delta) {
 		for (ArtificialIntelligence enemy : enemies) {
 			enemy.update(delta);
 		}
+	}
+	
+	public void resize(int width, int height) {
+		float widthUnit = width / 16f;
+		float heightUnit = height / 12f;
+		
+//		cursorCtrl = new Circle(0, 0, heightUnit * 3);
+		cursorCtrl = new Circle(heightUnit * 1.5f, heightUnit * 1.5f, heightUnit * 1.5f);
+//		cursorCtrl.setPosition(widthUnit * 2, heightUnit * 2);
+		
+		cursorCtl = new Rectangle(0, 0, widthUnit * 2.7f, heightUnit * 3);
 	}
 	
 	public void setWorldRenderer(WorldRenderer renderer) {

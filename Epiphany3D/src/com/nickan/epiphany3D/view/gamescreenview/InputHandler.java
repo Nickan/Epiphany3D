@@ -3,6 +3,7 @@ package com.nickan.epiphany3D.view.gamescreenview;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -83,6 +84,8 @@ public class InputHandler implements InputProcessor {
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY);
+		
 		switch (button) {
 		case Buttons.LEFT:
 			leftMouseDown = true;
@@ -107,7 +110,7 @@ public class InputHandler implements InputProcessor {
 		Vector3 dest = new Vector3(ray.origin).add(ray.direction.scl(mul));
 		
 		dest.set((int) dest.x + 0.5f, 0.001f, (int) dest.z + 0.5f);
-		world.cursor.set(dest);
+		world.tileCursor.set(dest);
 		
 		
 		// Check if the character is clicked
@@ -133,9 +136,41 @@ public class InputHandler implements InputProcessor {
 			}
 		}
 		
-
+		return cursorControlDown(screenX, screenY);
+	}
+	
+	private boolean cursorControlDown(int screenX, int screenY) {
+		Rectangle cursorCtrl = world.cursorCtl;
+		Vector2 cursorVel = world.cursorVelocity;
+		float speed = 100;
+		if (cursorCtrl.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+			
+			if (Gdx.graphics.getHeight() - screenY < cursorCtrl.height / 4) {
+				System.out.println("Bottom!");
+				cursorVel.y = -speed;
+			} else if (Gdx.graphics.getHeight() - screenY > cursorCtrl.height - (cursorCtrl.height / 4)){
+				System.out.println("Top!");
+				cursorVel.y = speed;
+			}
+			
+			if (screenX < cursorCtrl.width / 4) {
+				System.out.println("Left");
+				cursorVel.x = -speed;
+			} else if (screenX > cursorCtrl.width - (cursorCtrl.width / 4)) {
+				System.out.println("Right");
+				cursorVel.x = speed;
+			}
+			
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean cursorControlUp(int screenX, int screenY) {
+		world.cursorVelocity.set(0, 0);
 		return true;
 	}
+	
 
 	private boolean isInList(Array<Node> nodeList, int nodeX, int nodeY) {
 		for (Node tempNode: nodeList) {
@@ -212,10 +247,9 @@ public class InputHandler implements InputProcessor {
 			break;
 		}
 
-		return true;
+		return cursorControlUp(screenX, screenY);
 	}
 
-	boolean touch1 = false;
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		/*
