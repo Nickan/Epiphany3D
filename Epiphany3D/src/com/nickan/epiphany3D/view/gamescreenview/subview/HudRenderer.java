@@ -3,13 +3,14 @@ package com.nickan.epiphany3D.view.gamescreenview.subview;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.Character;
 
@@ -21,8 +22,6 @@ import com.nickan.epiphany3D.model.Character;
  */
 
 public class HudRenderer {
-	Texture hpBarTexture;
-	Sprite hpBarSprite;
 	Label enemyNameLabel;
 	private BitmapFont comic;
 	BitmapFont arial;
@@ -35,6 +34,11 @@ public class HudRenderer {
 	private float hpBarPosY;
 	private float widthUnit;
 	private float heightUnit;
+	
+	TextureAtlas atlas;
+	Skin skin;
+	Sprite hpBarSprite;
+	Sprite clickedSprite;
 
 	public HudRenderer(BitmapFont arial, BitmapFont comic) {
 		this.arial = arial;
@@ -47,23 +51,27 @@ public class HudRenderer {
 		enemyNameLabel = new Label("Enemy", ls);
 		enemyNameLabel.setHeight(hpBarHeight);
 
-		hpBarTexture = new Texture(Gdx.files.internal("graphics/hpbar.png"), true);
-		hpBarTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		hpBarSprite = new Sprite(hpBarTexture);
+		atlas = new TextureAtlas("graphics/hudrenderer.pack");
+		skin = new Skin(atlas);
+		
+		hpBarSprite = skin.getSprite("hpbar");
+		clickedSprite = skin.getSprite("cursorsmall");
+		clickedSprite.setAlpha(.5f);
+		
 	}
 
 	public void draw(SpriteBatch spriteBatch, PerspectiveCamera cam) {
+		spriteBatch.draw(skin.getRegion("circle"), 0, 0, heightUnit * 3, heightUnit * 3);
 		drawEnemyHealthBar(spriteBatch);
 		drawPlayerHealthBar(spriteBatch);
-		drawLetters(spriteBatch);
+//		drawLetters(spriteBatch);
 		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
 	}
 
 	private void drawEnemyHealthBar(SpriteBatch spriteBatch) {
 		if (enemy == null)
 			return;
-
+		
 		// Full Hp
 		hpBarSprite.setColor(Color.DARK_GRAY);
 		hpBarSprite.setBounds(hpBarPosX, hpBarPosY, hpBarWidth, hpBarHeight);
@@ -82,6 +90,7 @@ public class HudRenderer {
 
 		float hpWidth = 80;
 		float hpHeight = 10;
+		Sprite hpBarSprite = skin.getSprite("hpbar");
 		// Full Hp
 		hpBarSprite.setColor(Color.DARK_GRAY);
 		hpBarSprite.setBounds(1, hpBarPosY, hpWidth, hpHeight);
@@ -105,7 +114,17 @@ public class HudRenderer {
 		hpBarSprite.draw(spriteBatch);
 	}
 
-	private void drawLetters(SpriteBatch spriteBatch) {
+	public void drawCursor(SpriteBatch spriteBatch, Vector2 cursorPos) {
+		spriteBatch.draw(skin.getRegion("mousecursor"), cursorPos.x - 8f, cursorPos.y - 35f);
+	}
+	
+	public void drawClickedArea(SpriteBatch spriteBatch, Vector2 clickedAreaPos) {
+//		spriteBatch.draw(clickedSprite, clickedAreaPos.x, clickedAreaPos.y, widthUnit / 2, heightUnit / 2);
+		clickedSprite.setPosition(clickedAreaPos.x - (clickedSprite.getWidth() / 2), clickedAreaPos.y - (clickedSprite.getHeight() / 2));
+		clickedSprite.draw(spriteBatch, 1f);
+	}
+	
+	public void drawLetters(SpriteBatch spriteBatch) {
 		if (enemy == null)
 			return;
 		enemyNameLabel.draw(spriteBatch, 1);
@@ -124,9 +143,12 @@ public class HudRenderer {
 
 		hpBarPosX = (widthUnit * 8f) - (hpBarWidth / 2);
 		hpBarPosY = (heightUnit * 11.5f) - (hpBarHeight / 2);
+		
+		clickedSprite.setSize(widthUnit / 2, heightUnit / 2);
 	}
 
 	public void dispose() {
-		hpBarTexture.dispose();
+		skin.dispose();
+		atlas.dispose();
 	}
 }

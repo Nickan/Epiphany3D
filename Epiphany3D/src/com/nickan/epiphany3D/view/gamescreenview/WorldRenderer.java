@@ -73,7 +73,7 @@ public class WorldRenderer {
 	Button pauseButton;
 	TextureAtlas atlas;
 	Skin skin;
-	ModelInstance cursor;
+	ModelInstance tileCursor;
 
 	public WorldRenderer(World world) {
 		this.world = world;
@@ -97,7 +97,7 @@ public class WorldRenderer {
 		assets.load("graphics/zombie.g3db", Model.class);
 		assets.load("graphics/player.g3db", Model.class);
 		
-		assets.load("graphics/cursor.g3db", Model.class);
+		assets.load("graphics/tileCursor.g3db", Model.class);
 
 		loading = true;
 
@@ -120,12 +120,12 @@ public class WorldRenderer {
 		instanceManager.update(instances, lightPos);
 		
 		if (hudRenderer.enemy != null && loading == false)
-			world.cursor.set(hudRenderer.enemy.getPosition().x, 0.001f, hudRenderer.enemy.getPosition().z);
+			world.tileCursor.set(hudRenderer.enemy.getPosition().x, 0.001f, hudRenderer.enemy.getPosition().z);
 		
 		batch.begin(cam);
 
 		if (!loading) {
-			cursor.transform.setToTranslation(world.cursor.x, world.cursor.y, world.cursor.z);
+			tileCursor.transform.setToTranslation(world.tileCursor.x, world.tileCursor.y, world.tileCursor.z);
 			
 			for (ModelInstance instance: instances)
 				batch.render(instance, environment);
@@ -133,16 +133,21 @@ public class WorldRenderer {
 			if (clickedCharacter != null)
 				batch.render(clickedCharacter);
 			
-			batch.render(cursor);
+			batch.render(tileCursor);
 		}
 		batch.end();
 		
 		
 		stage.act();
 		spriteBatch.begin();
-		spriteBatch.setShader(fontShader);
 		hudRenderer.draw(spriteBatch, cam);
+		hudRenderer.drawCursor(spriteBatch, world.cursor);
+		hudRenderer.drawClickedArea(spriteBatch, world.clickedArea);
+		
+		spriteBatch.setShader(fontShader);
+		hudRenderer.drawLetters(spriteBatch);
 		spriteBatch.setShader(null);
+		
 		spriteBatch.end();
 		stage.draw();
 		
@@ -184,8 +189,7 @@ public class WorldRenderer {
 			}
 		}
 		
-		cursor = new ModelInstance(assets.get("graphics/cursor.g3db", Model.class));
-//		instances.add(cursor);
+		tileCursor = new ModelInstance(assets.get("graphics/tileCursor.g3db", Model.class));
 		
 		loading = false;
 	}
@@ -193,8 +197,6 @@ public class WorldRenderer {
 	private void load2DVariables() {
 		arial = new BitmapFont(Gdx.files.internal("graphics/fonts/arial.fnt"));
 		arial.setUseIntegerPositions(false);
-//		arial.setColor(Color.BLUE);
-//		arial.setScale(.5f);
 		
 		Texture texture = new Texture(Gdx.files.internal("graphics/fonts/comic.png"), true);
 		texture.setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
@@ -202,7 +204,6 @@ public class WorldRenderer {
 		comic = new BitmapFont(Gdx.files.internal("graphics/fonts/comic.fnt"), new TextureRegion(texture), false);
 		comic.setColor(Color.WHITE);
 		comic.setUseIntegerPositions(false);
-//		comic.setScale(2f);
 		arial.setUseIntegerPositions(false);
 		
 		fontShader = new ShaderProgram(Gdx.files.internal("graphics/fonts/font.vert"), Gdx.files.internal("graphics/fonts/font.frag"));
