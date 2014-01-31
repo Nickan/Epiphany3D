@@ -48,7 +48,7 @@ public class AttackHandler {
 	private boolean attackHasHit(float hitChance) {
 		int min = 0;
 		int max = 100;
-		return (RandomNumber.getRandomInt(min, max) < hitChance);
+		return (RandomNumber.getRandomInt(min, max) <= hitChance);
 	}
 
 	void reset() {

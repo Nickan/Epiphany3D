@@ -118,7 +118,7 @@ public class Character extends MoveableEntity {
 	 */
 	public boolean targetHit() {
 		Character enemy = (Character) EntityManager.getInstance().getEntity(enemyId);
-		float hitChance = (statsHandler.getAttackHit() / enemy.statsHandler.getAttackHit()) * 100;
+		float hitChance = (statsHandler.getAttackHit() / enemy.statsHandler.getAvoid()) * 100;
 		
 		switch (attackHandler.getAttackStatus(hitChance, statsHandler.attackDelay, Gdx.graphics.getDeltaTime())) {
 		case HIT:
