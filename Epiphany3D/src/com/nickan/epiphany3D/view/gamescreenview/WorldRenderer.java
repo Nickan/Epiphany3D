@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Button.ButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
@@ -141,15 +142,18 @@ public class WorldRenderer {
 		stage.act();
 		spriteBatch.begin();
 		hudRenderer.draw(spriteBatch, cam);
-		hudRenderer.drawCursor(spriteBatch, world.cursor);
-		hudRenderer.drawClickedArea(spriteBatch, world.clickedArea);
+		hudRenderer.drawCursor(spriteBatch, world.clickedArea);
 		
-		spriteBatch.setShader(fontShader);
-		hudRenderer.drawLetters(spriteBatch);
-		spriteBatch.setShader(null);
+		
 		
 		spriteBatch.end();
 		stage.draw();
+		
+		spriteBatch.begin();
+		spriteBatch.setShader(fontShader);
+		hudRenderer.drawLetters(spriteBatch, cam);
+		spriteBatch.setShader(null);
+		spriteBatch.end();
 		
 		debug();
 	}
@@ -229,9 +233,17 @@ public class WorldRenderer {
 		spriteBatch = (SpriteBatch) stage.getSpriteBatch();
 		
 		hudRenderer = new HudRenderer(arial, comic);
-		hudRenderer.enemy = world.enemies.get(0);
 		hudRenderer.player = world.player;
 		hudRenderer.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		
+		for (int num = 0; num < world.optionButtons.length; ++num) {
+			ButtonStyle style = new ButtonStyle();
+			style.over = skin.getDrawable("optionbuttonpressed");
+			style.up = skin.getDrawable("optionbuttonnormal");
+			world.optionButtons[num] = new Button(style);
+			stage.addActor(world.optionButtons[num]);
+		}
 	}
 	
 	// For debugging methods
@@ -270,6 +282,7 @@ public class WorldRenderer {
 		
 		float widthUnit = width / 16f;
 		float heightUnit = height / 12f;
+		comic.setScale((float) width / Epiphany3D.WIDTH, (float) height / Epiphany3D.HEIGHT);
 		
 		pauseButton.setBounds(widthUnit * 15f, heightUnit * 11f, widthUnit, heightUnit);
 		hudRenderer.resize(width, height);

@@ -1,12 +1,11 @@
 package com.nickan.epiphany3D.view.gamescreenview;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
 import com.nickan.epiphany3D.model.Player;
@@ -22,7 +21,7 @@ public class World {
 	static final int tileHeight = 200;
 	public static final PathFinder pathFinder = new PathFinder(tileWidth, tileHeight);
 
-	/** Automagically handled by the Character class */
+	/** Auto-magically handled by the Character class */
 	public static final Array<Node> occupiedNodes = new Array<Node>();
 
 	public static final Array<Node> unwalkableNodes = new Array<Node>();
@@ -39,11 +38,11 @@ public class World {
 	CameraController camController;
 	Vector3 tileCursor = new Vector3(21.5f, 0.001f, 21.5f);
 	Vector2 cursor = new Vector2(100, 100);
-	Vector2 cursorVelocity = new Vector2();
-	Circle cursorCtrl;
 	Rectangle cursorCtl;
 	
 	Vector2 clickedArea = new Vector2();
+	private static final int BUTTONS_QUANTITY = 4;
+	Button[] optionButtons = new Button[BUTTONS_QUANTITY];
 
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
@@ -94,33 +93,8 @@ public class World {
 
 		timePassed += delta;
 		camController.update(delta);
-		
-		updateCursor(delta);
+
 //		logger.log();
-	}
-	
-	private void updateCursor(float delta) {
-		if (cursor.x < 0) {
-			cursorVelocity.x = 0;
-			cursor.x = 1;
-		}
-		
-		if (cursor.x > Gdx.graphics.getWidth() - 5) {
-			cursorVelocity.x = 0;
-			cursor.x = Gdx.graphics.getWidth() - 5;
-		}
-		
-		if (cursor.y < 20) {
-			cursorVelocity.y = 0;
-			cursor.y = 20;
-		}
-		
-		if (cursor.y > Gdx.graphics.getHeight()) {
-			cursorVelocity.y = 0;
-			cursor.y = Gdx.graphics.getHeight();
-		}
-			
-		cursor.add(cursorVelocity.x * delta, cursorVelocity.y * delta);
 	}
 
 	private void updateEnemies(float delta) {
@@ -133,11 +107,11 @@ public class World {
 		float widthUnit = width / 16f;
 		float heightUnit = height / 12f;
 		
-//		cursorCtrl = new Circle(0, 0, heightUnit * 3);
-		cursorCtrl = new Circle(heightUnit * 1.5f, heightUnit * 1.5f, heightUnit * 1.5f);
-//		cursorCtrl.setPosition(widthUnit * 2, heightUnit * 2);
-		
 		cursorCtl = new Rectangle(0, 0, widthUnit * 2.7f, heightUnit * 3);
+		
+		for (int num = 0; num < optionButtons.length; ++num) {
+			optionButtons[num].setBounds(widthUnit * 14f, heightUnit * (num * 0.7f), widthUnit * 2.2f, heightUnit);
+		}
 	}
 	
 	public void setWorldRenderer(WorldRenderer renderer) {

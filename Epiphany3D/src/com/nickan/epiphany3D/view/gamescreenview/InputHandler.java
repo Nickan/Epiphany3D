@@ -2,8 +2,6 @@ package com.nickan.epiphany3D.view.gamescreenview;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -13,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.utils.Array;
 import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
+import com.nickan.epiphany3D.model.Character;
 import com.nickan.epiphany3D.model.Player;
 import com.nickan.epiphany3D.model.messagingsystem.MessageDispatcher;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
 import com.nickan.epiphany3D.screen.InventoryScreen;
+import com.nickan.epiphany3D.view.gamescreenview.subview.HudRenderer;
 import com.nickan.framework1_0.math.LineAABB;
 import com.nickan.framework1_0.pathfinder1_0.Node;
 
@@ -46,6 +46,7 @@ public class InputHandler implements InputProcessor {
 	// For the Stage's buttons
 	private void initializeButtons() {
 		initializePauseButton();
+		initializeOptionButtons();
 	}
 	
 	private void initializePauseButton() {
@@ -64,6 +65,26 @@ public class InputHandler implements InputProcessor {
 		});
 		
 	}
+	
+	private void initializeOptionButtons() {
+		Button[] buttons = world.optionButtons;
+		buttons[3].addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {	
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				Player player = world.player;
+				if (world.renderer.hudRenderer.enemy != null) {
+					Character enemy = world.renderer.hudRenderer.enemy;
+					MessageDispatcher.getInstance().dispatchMessage(player.getId(), enemy.getId(), 0, Message.TARGETED_BY_SENDER, player.getNextNode());
+				} else {
+					player.pathFindWalkableNode((int) world.tileCursor.x , (int) world.tileCursor.z);
+				}
+			}
+		});
+	}
+	
 	// End of Stage's buttons
 
 	@Override
@@ -84,8 +105,15 @@ public class InputHandler implements InputProcessor {
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY);
+		world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY + 20);
 		
+		
+		
+		return false;
+	}
+	
+	private void fixme() {
+		/*
 		switch (button) {
 		case Buttons.LEFT:
 			leftMouseDown = true;
@@ -101,7 +129,7 @@ public class InputHandler implements InputProcessor {
 			return false;
 
 		CameraController camCtrl = world.camController;
-		Ray ray = camCtrl.cam.getPickRay(screenX, screenY);
+		Ray ray = camCtrl.cam.getPickRay(screenX, screenY - 20);
 
 		// Get how many times the direction.y to reach the ground (y = 0) from the origin.y
 		float mul = Math.abs(ray.origin.y / ray.direction.y);
@@ -118,7 +146,7 @@ public class InputHandler implements InputProcessor {
 		world.renderer.hudRenderer.enemy = enemy;
 
 		if (enemy != null) {
-			processClickedEnemy(enemy, screenX, screenY);
+			processClickedEnemy(enemy, screenX, screenY - 20);
 		} else {
 			
 			// Cancels showing clicked enemy
@@ -135,40 +163,7 @@ public class InputHandler implements InputProcessor {
 				world.player.pathFindWalkableNode((int) dest.x, (int) dest.z);
 			}
 		}
-		
-		return cursorControlDown(screenX, screenY);
-	}
-	
-	private boolean cursorControlDown(int screenX, int screenY) {
-		Rectangle cursorCtrl = world.cursorCtl;
-		Vector2 cursorVel = world.cursorVelocity;
-		float speed = 100;
-		if (cursorCtrl.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
-			
-			if (Gdx.graphics.getHeight() - screenY < cursorCtrl.height / 4) {
-				System.out.println("Bottom!");
-				cursorVel.y = -speed;
-			} else if (Gdx.graphics.getHeight() - screenY > cursorCtrl.height - (cursorCtrl.height / 4)){
-				System.out.println("Top!");
-				cursorVel.y = speed;
-			}
-			
-			if (screenX < cursorCtrl.width / 4) {
-				System.out.println("Left");
-				cursorVel.x = -speed;
-			} else if (screenX > cursorCtrl.width - (cursorCtrl.width / 4)) {
-				System.out.println("Right");
-				cursorVel.x = speed;
-			}
-			
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean cursorControlUp(int screenX, int screenY) {
-		world.cursorVelocity.set(0, 0);
-		return true;
+		*/
 	}
 	
 
@@ -235,23 +230,36 @@ public class InputHandler implements InputProcessor {
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		
-		switch (button) {
-		case Buttons.LEFT:
-			leftMouseDown = false;
-			break;
-		case Buttons.RIGHT:
-			rightMouseDown = false;
-			break;
-		default:
-			break;
-		}
+		CameraController camCtrl = world.camController;
+		Ray ray = camCtrl.cam.getPickRay(screenX, screenY - 20);
 
-		return cursorControlUp(screenX, screenY);
+		// Get how many times the direction.y to reach the ground (y = 0) from the origin.y
+		float mul = Math.abs(ray.origin.y / ray.direction.y);
+		
+		// Then multiply all of the axis from the result to get the clicked surface
+		Vector3 dest = new Vector3(ray.origin).add(ray.direction.scl(mul));
+		
+		// See if there is an enemy being clicked
+		ArtificialIntelligence enemy = getClickedEnemy(ray.origin, dest);
+		HudRenderer renderer = world.renderer.hudRenderer;
+		
+		if (enemy != null) {
+			renderer.enemy = enemy;
+			world.renderer.clickedCharacter = enemy.getModelInstance();
+		} else {
+			
+		}
+		
+		// Always set the tile cursor to the clicked area (For now)
+		dest.set((int) dest.x + 0.5f, 0.001f, (int) dest.z + 0.5f);
+		world.tileCursor.set(dest);
+		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY + 20);
+		
 		/*
 		// Detects two fingers being dragged on the screen
 		if (pointer == 0) {
