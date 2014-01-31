@@ -23,7 +23,7 @@ public class AttackState implements BaseState<Character> {
 		entity.resetAttack();
 
 		//...
-		System.out.println("Enter attack state");
+//		System.out.println("Enter attack state");
 		entity.setState(State.ATTACKING);
 	}
 
@@ -86,7 +86,7 @@ public class AttackState implements BaseState<Character> {
 	}
 
 	private void pathFindEnemyNode(Character entity) {
-		System.out.println("path find enemy node");
+//		System.out.println("path find enemy node");
 
 		Node enemyNode = entity.getEnemyNode();
 		entity.initializePath(enemyNode);
@@ -108,7 +108,7 @@ public class AttackState implements BaseState<Character> {
 		entity.resetAttack();
 
 		//...
-		System.out.println("Exit attacking");
+//		System.out.println("Exit attacking");
 	}
 
 	@Override

@@ -38,7 +38,6 @@ public class HudRenderer {
 	TextureAtlas atlas;
 	Skin skin;
 	Sprite hpBarSprite;
-	Sprite clickedSprite;
 
 	public HudRenderer(BitmapFont arial, BitmapFont comic) {
 		this.arial = arial;
@@ -55,8 +54,6 @@ public class HudRenderer {
 		skin = new Skin(atlas);
 		
 		hpBarSprite = skin.getSprite("hpbar");
-		clickedSprite = skin.getSprite("cursorsmall");
-		clickedSprite.setAlpha(.5f);
 		
 	}
 
@@ -64,12 +61,14 @@ public class HudRenderer {
 		spriteBatch.draw(skin.getRegion("circle"), 0, 0, heightUnit * 3, heightUnit * 3);
 		drawEnemyHealthBar(spriteBatch);
 		drawPlayerHealthBar(spriteBatch);
-//		drawLetters(spriteBatch);
-		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
 	}
 
 	private void drawEnemyHealthBar(SpriteBatch spriteBatch) {
-		if (enemy == null)
+		if (enemy == null) {
+			return;
+		}
+		
+		if (!enemy.isAlive())
 			return;
 		
 		// Full Hp
@@ -118,16 +117,21 @@ public class HudRenderer {
 		spriteBatch.draw(skin.getRegion("mousecursor"), cursorPos.x - 8f, cursorPos.y - 35f);
 	}
 	
-	public void drawClickedArea(SpriteBatch spriteBatch, Vector2 clickedAreaPos) {
-//		spriteBatch.draw(clickedSprite, clickedAreaPos.x, clickedAreaPos.y, widthUnit / 2, heightUnit / 2);
-		clickedSprite.setPosition(clickedAreaPos.x - (clickedSprite.getWidth() / 2), clickedAreaPos.y - (clickedSprite.getHeight() / 2));
-		clickedSprite.draw(spriteBatch, 1f);
-	}
-	
-	public void drawLetters(SpriteBatch spriteBatch) {
-		if (enemy == null)
-			return;
-		enemyNameLabel.draw(spriteBatch, 1);
+	public void drawLetters(SpriteBatch spriteBatch, PerspectiveCamera cam) {
+		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
+		
+		if (enemy != null) {
+			comic.draw(spriteBatch, "Attack", widthUnit * 14.35f, heightUnit * 3.15f);
+			enemyNameLabel.draw(spriteBatch, 1);
+			
+			if (!enemy.isAlive()) {
+				enemy = null;
+				return;
+			}
+		} else {
+			comic.draw(spriteBatch, "Move", widthUnit * 14.35f, heightUnit * 3.15f);
+		}
+		
 	}
 
 	public void resize(int width, int height) {
@@ -143,8 +147,6 @@ public class HudRenderer {
 
 		hpBarPosX = (widthUnit * 8f) - (hpBarWidth / 2);
 		hpBarPosY = (heightUnit * 11.5f) - (hpBarHeight / 2);
-		
-		clickedSprite.setSize(widthUnit / 2, heightUnit / 2);
 	}
 
 	public void dispose() {

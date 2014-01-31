@@ -34,6 +34,7 @@ public class GameScreen implements Screen {
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
 		renderer.resize(width, height);
+		world.resize(width, height);
 	}
 
 	@Override

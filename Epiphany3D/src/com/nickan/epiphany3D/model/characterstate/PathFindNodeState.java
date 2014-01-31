@@ -21,7 +21,7 @@ public class PathFindNodeState implements BaseState<Character> {
 		entity.setAction(Action.RUNNING);
 
 		//...
-		System.out.println("Entering path find");
+//		System.out.println("Entering path find");
 		entity.setState(State.PATHFINDING);
 	}
 
@@ -58,7 +58,7 @@ public class PathFindNodeState implements BaseState<Character> {
 					entity.identifyOccupiedNode();
 
 					//...
-					System.out.println("Is in occupied nodes");
+//					System.out.println("Is in occupied nodes");
 				}
 				World.occupiedNodes.add(nextNode);
 
@@ -85,7 +85,7 @@ public class PathFindNodeState implements BaseState<Character> {
 		// TODO Auto-generated method stub
 
 		//...
-		System.out.println("Exiting path find");
+//		System.out.println("Exiting path find");
 	}
 
 	public static BaseState<Character> getInstance() {

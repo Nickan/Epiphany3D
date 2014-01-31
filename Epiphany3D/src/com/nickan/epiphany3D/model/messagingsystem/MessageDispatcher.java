@@ -44,7 +44,7 @@ public class MessageDispatcher {
 		receiver.handleMessage(telegram);
 		
 		//...
-		System.out.println("Send message");
+//		System.out.println("Send message");
 	}
 
 	public void dispatchMessage(int senderId, int receiverId, float dispatchTime, Message msg, Object extraInfo) {
