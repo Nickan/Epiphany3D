@@ -58,7 +58,7 @@ public class HudRenderer {
 	}
 
 	public void draw(SpriteBatch spriteBatch, PerspectiveCamera cam) {
-		spriteBatch.draw(skin.getRegion("circle"), 0, 0, heightUnit * 3, heightUnit * 3);
+//		spriteBatch.draw(skin.getRegion("circle"), 0, 0, heightUnit * 3, heightUnit * 3);
 		drawEnemyHealthBar(spriteBatch);
 		drawPlayerHealthBar(spriteBatch);
 	}
@@ -87,29 +87,27 @@ public class HudRenderer {
 		if (player == null)
 			return;
 
-		float hpWidth = 80;
-		float hpHeight = 10;
 		Sprite hpBarSprite = skin.getSprite("hpbar");
 		// Full Hp
 		hpBarSprite.setColor(Color.DARK_GRAY);
-		hpBarSprite.setBounds(1, hpBarPosY, hpWidth, hpHeight);
+		hpBarSprite.setBounds(1, hpBarPosY, hpBarWidth, hpBarHeight);
 		hpBarSprite.draw(spriteBatch);
 
 		// Current Hp
 		float fracCurrentHp = player.statsHandler.currentHp / player.statsHandler.getFullHp();
 		hpBarSprite.setColor(Color.YELLOW);
-		hpBarSprite.setBounds(1, hpBarPosY, hpWidth * fracCurrentHp, hpHeight);
+		hpBarSprite.setBounds(1, hpBarPosY, hpBarWidth * fracCurrentHp, hpBarHeight);
 		hpBarSprite.draw(spriteBatch);
 
-		// Full Hp
+		// Full Mp
 		hpBarSprite.setColor(Color.DARK_GRAY);
-		hpBarSprite.setBounds(1, hpBarPosY - hpHeight * 1.5f, hpWidth, hpHeight);
+		hpBarSprite.setBounds(1, hpBarPosY - heightUnit * 0.5f, hpBarWidth, hpBarHeight);
 		hpBarSprite.draw(spriteBatch);
 
-		// Current Hp
+		// Current Mp
 		float fracCurrentMp = player.statsHandler.currentMp / player.statsHandler.getFullMp();
 		hpBarSprite.setColor(Color.BLUE);
-		hpBarSprite.setBounds(1, hpBarPosY - hpHeight * 1.5f, hpWidth * fracCurrentMp, hpHeight);
+		hpBarSprite.setBounds(1, hpBarPosY - heightUnit * 0.5f, hpBarWidth * fracCurrentMp, hpBarHeight);
 		hpBarSprite.draw(spriteBatch);
 	}
 
@@ -127,13 +125,8 @@ public class HudRenderer {
 		
 		if (enemy != null) {
 			comic.draw(spriteBatch, "Attack", widthUnit * 14.35f, heightUnit * 3.15f);
-			comic.draw(spriteBatch, "Cancel", widthUnit * 14.35f, heightUnit * 2.5f);
+			comic.draw(spriteBatch, "Move", widthUnit * 14.35f, heightUnit * 2.5f);
 			enemyNameLabel.draw(spriteBatch, 1);
-			
-			if (!enemy.isAlive()) {
-				enemy = null;
-				return;
-			}
 		} else {
 			comic.draw(spriteBatch, "Move", widthUnit * 14.35f, heightUnit * 3.15f);
 		}
@@ -141,8 +134,8 @@ public class HudRenderer {
 	}
 
 	public void resize(int width, int height) {
-		hpBarWidth = width / 3;
-		hpBarHeight = height / 30;
+		hpBarWidth = (int) width / 5f;
+		hpBarHeight = (int) height / 35f;
 
 		widthUnit = width / 16f;
 		heightUnit = height / 12f;

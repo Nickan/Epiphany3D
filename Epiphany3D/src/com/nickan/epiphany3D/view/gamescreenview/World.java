@@ -2,7 +2,6 @@ package com.nickan.epiphany3D.view.gamescreenview;
 
 
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -38,17 +37,18 @@ public class World {
 	CameraController camController;
 	Vector3 tileCursor = new Vector3(21.5f, 0.001f, 21.5f);
 	Vector2 cursor = new Vector2(100, 100);
-	Rectangle cursorCtl;
-	Vector2 cameraRotationCtrl = new Vector2();
 	
 	Vector2 clickedArea = new Vector2();
-	private static final int BUTTONS_QUANTITY = 4;
+	private static final int BUTTONS_QUANTITY = 2;
 	Button[] optionButtons = new Button[BUTTONS_QUANTITY];
-	
+	Button upCamButton;
+	Button downCamButton;
+	Button leftCamButton;
+	Button rightCamButton;
 
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
-		player.statsHandler.whosYourDaddy();
+//		player.statsHandler.whosYourDaddy();
 		System.out.println("Player's attack speed " + player.statsHandler.getAttackSpd());
 		System.out.println("Player attack delay " + player.statsHandler.attackDelay);
 		System.out.println("Player' Agi " + player.statsHandler.getAgi());
@@ -83,8 +83,8 @@ public class World {
 		}
 //		enemies.add(enemy);
 		//... Testing
-		enemies.get(0).statsHandler.addAddedAgi(90);
-		enemies.get(0).statsHandler.calcFinalAttributes();
+//		enemies.get(0).statsHandler.addAddedAgi(90);
+//		enemies.get(0).statsHandler.calcFinalAttributes();
 	}
 
 	public void update(float delta) {
@@ -103,18 +103,28 @@ public class World {
 		for (ArtificialIntelligence enemy : enemies) {
 			enemy.update(delta);
 		}
+		
+		if (renderer.hudRenderer.enemy != null) {
+			if (!renderer.hudRenderer.enemy.isAlive()) {
+				renderer.hudRenderer.enemy = null;
+				renderer.instances.add(renderer.clickedCharacter);
+				renderer.clickedCharacter = null;
+			}
+		}
 	}
 	
 	public void resize(int width, int height) {
 		float widthUnit = width / 16f;
 		float heightUnit = height / 12f;
 		
-		cursorCtl = new Rectangle(0, 0, widthUnit * 2.7f, heightUnit * 3);
-		cameraRotationCtrl.set(cursorCtl.width / 2, cursorCtl.height / 2);
-		
 		for (int num = 0; num < optionButtons.length; ++num) {
-			optionButtons[num].setBounds(widthUnit * 14f, heightUnit * (num * 0.7f), widthUnit * 2.2f, heightUnit);
+			optionButtons[num].setBounds(widthUnit * 14f, heightUnit * (num * 1.4f), widthUnit * 2.2f, heightUnit * 2);
 		}
+		
+		upCamButton.setBounds(widthUnit * 1.5f, heightUnit * 3, widthUnit * 1.5f, heightUnit * 1.5f);
+		downCamButton.setBounds(widthUnit * 1.5f, 0, widthUnit * 1.5f, heightUnit * 1.5f);
+		leftCamButton.setBounds(0, heightUnit * 1.5f, widthUnit * 1.5f, heightUnit * 1.5f);
+		rightCamButton.setBounds(widthUnit * 3, heightUnit * 1.5f, widthUnit * 1.5f, heightUnit * 1.5f);
 	}
 	
 	public void setWorldRenderer(WorldRenderer renderer) {

@@ -2,7 +2,8 @@ package com.nickan.epiphany3D.view.gamescreenview;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,6 +23,12 @@ public class InputHandler implements InputProcessor {
 	World world;
 	public Epiphany3D game;
 
+	boolean rightMouseDown = false;
+	boolean leftMouseDown = false;
+
+	// Manipulation of text on the screen
+	float pos = 0.1f;
+
 	public InputHandler(World world, Epiphany3D game) {
 		this.world = world;
 		this.game = game;
@@ -32,6 +39,7 @@ public class InputHandler implements InputProcessor {
 	private void initializeButtons() {
 		initializePauseButton();
 		initializeOptionButtons();
+		initializeCamButtons();
 	}
 	
 	private void initializePauseButton() {
@@ -51,8 +59,11 @@ public class InputHandler implements InputProcessor {
 	
 	private void initializeOptionButtons() {
 		Button[] buttons = world.optionButtons;
-		buttons[3].addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {	
+		buttons[1].addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				if (pointer > 0)
+					return false;
+				
 				return true;
 			}
 
@@ -67,15 +78,63 @@ public class InputHandler implements InputProcessor {
 			}
 		});
 		
-		buttons[2].addListener(new InputListener() {
+		// Cancel button
+		buttons[0].addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {	
 				return true;
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (world.renderer.hudRenderer.enemy != null) {
-					world.renderer.hudRenderer.enemy = null;
+					world.player.pathFindWalkableNode((int) world.tileCursor.x , (int) world.tileCursor.z);
 				}
+			}
+		});
+	}
+	
+	private void initializeCamButtons() {
+		final float speed = 100;
+		world.upCamButton.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.x = speed;
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.x = 0;
+			}
+		});
+	
+		world.downCamButton.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.x = -speed;
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.x = 0;
+			}
+		});
+		
+		world.leftCamButton.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.y = speed;
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.y = 0;
+			}
+		});
+		
+		world.rightCamButton.addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.y = -speed;
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				world.camController.rotationSpeed.y = 0;
 			}
 		});
 	}
@@ -100,34 +159,8 @@ public class InputHandler implements InputProcessor {
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if ( !cursorControlDown(screenX, screenY) ) {
-			world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY + 20);
-		}
+		this.button = button;
 		return true;
-	}
-	
-	private boolean cursorControlDown(int screenX, int screenY) {
-		Rectangle cursorCtrl = world.cursorCtl;
-		float speed = 100;
-		float size = 4;
-		if (cursorCtrl.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
-			world.cameraRotationCtrl.set(screenX, Gdx.graphics.getHeight() - screenY);
-			
-			if (Gdx.graphics.getHeight() - screenY < cursorCtrl.height / size) {
-				world.camController.rotationSpeed.x = -speed;
-			} else if (Gdx.graphics.getHeight() - screenY > cursorCtrl.height - (cursorCtrl.height / size)){
-				world.camController.rotationSpeed.x = speed;
-			}
-
-			if (screenX < cursorCtrl.width / size) {
-				world.camController.rotationSpeed.y = speed;
-			} else if (screenX > cursorCtrl.width - (cursorCtrl.width / size)) {
-				world.camController.rotationSpeed.y = -speed;
-			}
-
-			return true;
-		}
-		return false;
 	}
 
 	private ArtificialIntelligence getClickedEnemy(Vector3 origin, Vector3 end) {
@@ -143,12 +176,6 @@ public class InputHandler implements InputProcessor {
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		// Resets the rotation of the camera
 		world.camController.rotationSpeed.set(0, 0, 0);
-		world.cameraRotationCtrl.set(world.cursorCtl.width / 2, world.cursorCtl.height / 2);
-		
-		Rectangle cursorCtrl = world.cursorCtl;
-		if (cursorCtrl.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
-			return true;
-		}
 		
 		CameraController camCtrl = world.camController;
 		Ray ray = camCtrl.cam.getPickRay(screenX, screenY - 20);
@@ -179,9 +206,32 @@ public class InputHandler implements InputProcessor {
 	}
 
 	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
+	public boolean touchDragged(int screenX, int screenY, int pointer) {	
 		world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY + 20);
+		
+		if (button == Buttons.RIGHT)
+			camControllerDragged(screenX, screenY);
 		return true;
+	}
+	
+	Vector2 pointerPos = new Vector2();
+	int button;
+	
+	private void camControllerDragged(int screenX, int screenY) {
+		CameraController camCtrl = world.camController;
+		if (screenY > pointerPos.y) {
+			camCtrl.lookDown();
+		} else if (screenY < pointerPos.y) {
+			camCtrl.lookUp();
+		}
+
+		if (screenX > pointerPos.x) {
+			camCtrl.lookRight();
+		} else if (screenX < pointerPos.x) {
+			camCtrl.lookLeft();
+		}
+
+		pointerPos.set(screenX, screenY);
 	}
 
 

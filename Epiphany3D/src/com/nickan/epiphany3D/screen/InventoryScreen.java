@@ -19,8 +19,8 @@ public class InventoryScreen implements Screen {
 		this.game = game;
 		this.gameScreen = gameScreen;
 		handler = new Handler(this, gameScreen.world.player);
-		renderer = new Renderer(handler, gameScreen.renderer.spriteBatch, gameScreen.renderer.arial, 
-				gameScreen.renderer.comic, gameScreen.renderer.fontShader);
+//		renderer = new Renderer(handler, gameScreen.renderer.spriteBatch, gameScreen.renderer.arial, 
+//				gameScreen.renderer.comic, gameScreen.renderer.fontShader);
 		controller = new Controller(handler);
 	}
 	

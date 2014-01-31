@@ -59,7 +59,7 @@ public class WorldRenderer {
 	public BitmapFont arial;
 	public BitmapFont comic;
 	
-	public ShaderProgram fontShader;
+//	public ShaderProgram fontShader;
 
 	public Stage stage;
 	Label label;
@@ -143,13 +143,12 @@ public class WorldRenderer {
 		spriteBatch.begin();
 		hudRenderer.draw(spriteBatch, cam);
 		hudRenderer.drawCursor(spriteBatch, world.clickedArea);
-		hudRenderer.drawCameraRotationCursor(spriteBatch, world.cameraRotationCtrl);
 		
 		spriteBatch.end();
 		stage.draw();
 		
 		spriteBatch.begin();
-		spriteBatch.setShader(fontShader);
+//		spriteBatch.setShader(fontShader);
 		hudRenderer.drawLetters(spriteBatch, cam);
 		spriteBatch.setShader(null);
 		spriteBatch.end();
@@ -209,11 +208,11 @@ public class WorldRenderer {
 		comic.setUseIntegerPositions(false);
 		arial.setUseIntegerPositions(false);
 		
-		fontShader = new ShaderProgram(Gdx.files.internal("graphics/fonts/font.vert"), Gdx.files.internal("graphics/fonts/font.frag"));
+//		fontShader = new ShaderProgram(Gdx.files.internal("graphics/fonts/font.vert"), Gdx.files.internal("graphics/fonts/font.frag"));
 		
-		if (!fontShader.isCompiled()) {
-		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
-		}
+//		if (!fontShader.isCompiled()) {
+//		    Gdx.app.error("fontShader", "compilation failed:\n" + fontShader.getLog());
+//		}
 		
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		stage.clear();
@@ -238,11 +237,22 @@ public class WorldRenderer {
 		
 		for (int num = 0; num < world.optionButtons.length; ++num) {
 			ButtonStyle style = new ButtonStyle();
-			style.over = skin.getDrawable("optionbuttonpressed");
 			style.up = skin.getDrawable("optionbuttonnormal");
+			style.down = skin.getDrawable("optionbuttonpressed");
+			style.over = skin.getDrawable("optionbuttonpressed");
+			
 			world.optionButtons[num] = new Button(style);
 			stage.addActor(world.optionButtons[num]);
 		}
+		
+		world.upCamButton = new Button(skin.getDrawable("arrowupnormal"), skin.getDrawable("arrowuppressed"));
+		world.downCamButton = new Button(skin.getDrawable("arrowdownnormal"), skin.getDrawable("arrowdownpressed"));
+		world.leftCamButton = new Button(skin.getDrawable("arrowleftnormal"), skin.getDrawable("arrowleftpressed"));
+		world.rightCamButton = new Button(skin.getDrawable("arrowrightnormal"), skin.getDrawable("arrowrightpressed"));
+		stage.addActor(world.upCamButton);
+		stage.addActor(world.downCamButton);
+		stage.addActor(world.leftCamButton);
+		stage.addActor(world.rightCamButton);
 	}
 	
 	// For debugging methods
