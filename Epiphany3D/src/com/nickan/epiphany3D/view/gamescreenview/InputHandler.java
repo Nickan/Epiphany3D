@@ -2,13 +2,12 @@ package com.nickan.epiphany3D.view.gamescreenview;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.utils.Array;
 import com.nickan.epiphany3D.Epiphany3D;
 import com.nickan.epiphany3D.model.ArtificialIntelligence;
 import com.nickan.epiphany3D.model.Character;
@@ -18,24 +17,10 @@ import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
 import com.nickan.epiphany3D.screen.InventoryScreen;
 import com.nickan.epiphany3D.view.gamescreenview.subview.HudRenderer;
 import com.nickan.framework1_0.math.LineAABB;
-import com.nickan.framework1_0.pathfinder1_0.Node;
 
 public class InputHandler implements InputProcessor {
 	World world;
 	public Epiphany3D game;
-	Vector2 pointerPos = new Vector2();
-	Vector2 previousTouch = new Vector2();
-	Vector3 touch = new Vector3();
-
-	// For the detection of the double click
-	private boolean storedClick = false;
-	private float clickDelay = 0.5f;
-
-	boolean rightMouseDown = false;
-	boolean leftMouseDown = false;
-
-	// Manipulation of text on the screen
-	float pos = 0.1f;
 
 	public InputHandler(World world, Epiphany3D game) {
 		this.world = world;
@@ -54,12 +39,10 @@ public class InputHandler implements InputProcessor {
 
 		pauseButton.addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				Gdx.app.log("Example", "touch started at (" + x + ", " + y + ")");
 				return true;
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				Gdx.app.log("Example", "touch done at (" + x + ", " + y + ")");
 				game.setScreen(new InventoryScreen(game, game.gameScreen));
 			}
 		});
@@ -80,6 +63,18 @@ public class InputHandler implements InputProcessor {
 					MessageDispatcher.getInstance().dispatchMessage(player.getId(), enemy.getId(), 0, Message.TARGETED_BY_SENDER, player.getNextNode());
 				} else {
 					player.pathFindWalkableNode((int) world.tileCursor.x , (int) world.tileCursor.z);
+				}
+			}
+		});
+		
+		buttons[2].addListener(new InputListener() {
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {	
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (world.renderer.hudRenderer.enemy != null) {
+					world.renderer.hudRenderer.enemy = null;
 				}
 			}
 		});
@@ -105,88 +100,34 @@ public class InputHandler implements InputProcessor {
 	
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY + 20);
-		
-		
-		
-		return false;
+		if ( !cursorControlDown(screenX, screenY) ) {
+			world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY + 20);
+		}
+		return true;
 	}
 	
-	private void fixme() {
-		/*
-		switch (button) {
-		case Buttons.LEFT:
-			leftMouseDown = true;
-			break;
-		case Buttons.RIGHT:
-			rightMouseDown = true;
-			break;
-		default:
-			break;
-		}
-
-		if (button != Buttons.LEFT)
-			return false;
-
-		CameraController camCtrl = world.camController;
-		Ray ray = camCtrl.cam.getPickRay(screenX, screenY - 20);
-
-		// Get how many times the direction.y to reach the ground (y = 0) from the origin.y
-		float mul = Math.abs(ray.origin.y / ray.direction.y);
-		
-		// Then multiply all of the axis from the result to get the clicked surface
-		Vector3 dest = new Vector3(ray.origin).add(ray.direction.scl(mul));
-		
-		dest.set((int) dest.x + 0.5f, 0.001f, (int) dest.z + 0.5f);
-		world.tileCursor.set(dest);
-		
-		
-		// Check if the character is clicked
-		ArtificialIntelligence enemy = getClickedEnemy(ray.origin, dest);
-		world.renderer.hudRenderer.enemy = enemy;
-
-		if (enemy != null) {
-			processClickedEnemy(enemy, screenX, screenY - 20);
-		} else {
+	private boolean cursorControlDown(int screenX, int screenY) {
+		Rectangle cursorCtrl = world.cursorCtl;
+		float speed = 100;
+		float size = 4;
+		if (cursorCtrl.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+			world.cameraRotationCtrl.set(screenX, Gdx.graphics.getHeight() - screenY);
 			
-			// Cancels showing clicked enemy
-			if (world.renderer.clickedCharacter != null) {
-				world.renderer.instances.add(world.renderer.clickedCharacter);
-				world.renderer.clickedCharacter = null;
+			if (Gdx.graphics.getHeight() - screenY < cursorCtrl.height / size) {
+				world.camController.rotationSpeed.x = -speed;
+			} else if (Gdx.graphics.getHeight() - screenY > cursorCtrl.height - (cursorCtrl.height / size)){
+				world.camController.rotationSpeed.x = speed;
 			}
 
-			// Preventing to path find those areas that are not included in path finding node list
-			if (dest.x < 0 || dest.z < 0 || dest.x >= 100 || dest.z >= 100)
-				return false;
-
-			if (!isInList(World.occupiedNodes, (int) dest.x, (int) dest.z)) {
-				world.player.pathFindWalkableNode((int) dest.x, (int) dest.z);
+			if (screenX < cursorCtrl.width / size) {
+				world.camController.rotationSpeed.y = speed;
+			} else if (screenX > cursorCtrl.width - (cursorCtrl.width / size)) {
+				world.camController.rotationSpeed.y = -speed;
 			}
-		}
-		*/
-	}
-	
 
-	private boolean isInList(Array<Node> nodeList, int nodeX, int nodeY) {
-		for (Node tempNode: nodeList) {
-			if (tempNode.isSame(nodeX, nodeY)) {
-				return true;
-			}
+			return true;
 		}
 		return false;
-	}
-
-	private void processClickedEnemy(ArtificialIntelligence enemy, int screenX, int screenY) {
-		Player player = world.player;
-		if (doubleClicked(screenX, screenY)) {
-			if (enemy.isAlive()) {
-				MessageDispatcher.getInstance().dispatchMessage(player.getId(), enemy.getId(), 0, Message.TARGETED_BY_SENDER, player.getNextNode());			
-			}
-		} else {
-			// Show name and status
-			world.renderer.clickedCharacter = enemy.getModelInstance();
-			world.renderer.instances.removeValue(enemy.getModelInstance(), true);
-		}
 	}
 
 	private ArtificialIntelligence getClickedEnemy(Vector3 origin, Vector3 end) {
@@ -198,38 +139,17 @@ public class InputHandler implements InputProcessor {
 		return null;
 	}
 
-	/**
-	 *
-	 * @param screenX
-	 * @param screenY
-	 * @return If the user double clicks
-	 */
-	private boolean doubleClicked(int screenX, int screenY) {
-		boolean doubleClicked = false;
-		// Implementing the double clicking
-		if (storedClick) {
-			if (world.timePassed < clickDelay) {
-
-				// Check to see if the user clicked on the same area
-				// Make an allowance
-				float allowanceClick = 5;
-				if (Math.abs(previousTouch.x - screenX) < allowanceClick && Math.abs(previousTouch.y - screenY) < allowanceClick ) {
-					//				if (previousTouch.x == screenX && previousTouch.y == screenY) {
-					storedClick = false;
-					doubleClicked = true;
-				}
-			}
-		} else {
-			storedClick = true;
-		}
-
-		previousTouch.set(screenX, screenY);
-		world.timePassed = 0;
-		return doubleClicked;
-	}
-
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		// Resets the rotation of the camera
+		world.camController.rotationSpeed.set(0, 0, 0);
+		world.cameraRotationCtrl.set(world.cursorCtl.width / 2, world.cursorCtl.height / 2);
+		
+		Rectangle cursorCtrl = world.cursorCtl;
+		if (cursorCtrl.contains(screenX, Gdx.graphics.getHeight() - screenY)) {
+			return true;
+		}
+		
 		CameraController camCtrl = world.camController;
 		Ray ray = camCtrl.cam.getPickRay(screenX, screenY - 20);
 
@@ -252,47 +172,18 @@ public class InputHandler implements InputProcessor {
 		
 		// Always set the tile cursor to the clicked area (For now)
 		dest.set((int) dest.x + 0.5f, 0.001f, (int) dest.z + 0.5f);
-		world.tileCursor.set(dest);
+		// Preventing to path find those areas that are not included in path finding node list
+		if (dest.x >= 0 || dest.z >= 0 || dest.x < 100 || dest.z < 100)
+			world.tileCursor.set(dest);
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
 		world.clickedArea.set(screenX, Gdx.graphics.getHeight() - screenY + 20);
-		
-		/*
-		// Detects two fingers being dragged on the screen
-		if (pointer == 0) {
-			touch1 = true;
-		} else {
-
-			if (pointer == 1 && touch1) {
-				world.camController.zoomScale += Gdx.graphics.getDeltaTime() * 10;
-			}
-		}
-		*/
-
-		//		if (rightMouseDown)
-		camControllerDragged(screenX, screenY);
 		return true;
 	}
 
-	private void camControllerDragged(int screenX, int screenY) {
-		CameraController camCtrl = world.camController;
-		if (screenY > pointerPos.y) {
-			camCtrl.lookDown();
-		} else if (screenY < pointerPos.y) {
-			camCtrl.lookUp();
-		}
-
-		if (screenX > pointerPos.x) {
-			camCtrl.lookRight();
-		} else if (screenX < pointerPos.x) {
-			camCtrl.lookLeft();
-		}
-
-		pointerPos.set(screenX, screenY);
-	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {

@@ -117,11 +117,17 @@ public class HudRenderer {
 		spriteBatch.draw(skin.getRegion("mousecursor"), cursorPos.x - 8f, cursorPos.y - 35f);
 	}
 	
+	public void drawCameraRotationCursor(SpriteBatch spriteBatch, Vector2 cameraRotationCursor) {
+		spriteBatch.draw(skin.getRegion("cursorsmall"), cameraRotationCursor.x - (widthUnit / 4), cameraRotationCursor.y - (heightUnit / 4), 
+				widthUnit / 2, heightUnit / 2);
+	}
+	
 	public void drawLetters(SpriteBatch spriteBatch, PerspectiveCamera cam) {
 		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
 		
 		if (enemy != null) {
 			comic.draw(spriteBatch, "Attack", widthUnit * 14.35f, heightUnit * 3.15f);
+			comic.draw(spriteBatch, "Cancel", widthUnit * 14.35f, heightUnit * 2.5f);
 			enemyNameLabel.draw(spriteBatch, 1);
 			
 			if (!enemy.isAlive()) {

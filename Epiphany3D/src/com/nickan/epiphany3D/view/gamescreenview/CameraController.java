@@ -10,6 +10,7 @@ public class CameraController {
 	PerspectiveCamera cam;
 	Vector3 rotation = new Vector3(45, 0, 0);
 	Vector3 playerPos;
+	Vector3 rotationSpeed = new Vector3();
 
 	float moveSpeed = 5f;
 	float lookSpeed = 50f;
@@ -51,6 +52,8 @@ public class CameraController {
 
 
 	private void updateChaseMode(float delta) {
+		rotation.add(rotationSpeed.x * delta, rotationSpeed.y * delta, rotationSpeed.z * delta);
+		rotationCheck();
 		// Get the reverse direction
 		cam.direction.set(Euler.toAxes(rotation)).nor().scl(-1);
 
@@ -95,6 +98,17 @@ public class CameraController {
 		}
 
 		cam.position.add(velocity);
+	}
+	
+	private void rotationCheck() {
+		if (rotation.x < 15)
+			rotation.x = 15;
+		if (rotation.x > 80)
+			rotation.x = 80;
+		if (rotation.y < 0)
+			rotation.y = 359;
+		if (rotation.y > 359)
+			rotation.y = 0;
 	}
 
 

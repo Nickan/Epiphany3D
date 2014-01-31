@@ -39,10 +39,12 @@ public class World {
 	Vector3 tileCursor = new Vector3(21.5f, 0.001f, 21.5f);
 	Vector2 cursor = new Vector2(100, 100);
 	Rectangle cursorCtl;
+	Vector2 cameraRotationCtrl = new Vector2();
 	
 	Vector2 clickedArea = new Vector2();
 	private static final int BUTTONS_QUANTITY = 4;
 	Button[] optionButtons = new Button[BUTTONS_QUANTITY];
+	
 
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
@@ -108,6 +110,7 @@ public class World {
 		float heightUnit = height / 12f;
 		
 		cursorCtl = new Rectangle(0, 0, widthUnit * 2.7f, heightUnit * 3);
+		cameraRotationCtrl.set(cursorCtl.width / 2, cursorCtl.height / 2);
 		
 		for (int num = 0; num < optionButtons.length; ++num) {
 			optionButtons[num].setBounds(widthUnit * 14f, heightUnit * (num * 0.7f), widthUnit * 2.2f, heightUnit);

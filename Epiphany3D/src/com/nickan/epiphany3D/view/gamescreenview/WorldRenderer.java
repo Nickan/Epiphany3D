@@ -120,8 +120,8 @@ public class WorldRenderer {
 		
 		instanceManager.update(instances, lightPos);
 		
-		if (hudRenderer.enemy != null && loading == false)
-			world.tileCursor.set(hudRenderer.enemy.getPosition().x, 0.001f, hudRenderer.enemy.getPosition().z);
+//		if (hudRenderer.enemy != null && loading == false)
+//			world.tileCursor.set(hudRenderer.enemy.getPosition().x, 0.001f, hudRenderer.enemy.getPosition().z);
 		
 		batch.begin(cam);
 
@@ -143,8 +143,7 @@ public class WorldRenderer {
 		spriteBatch.begin();
 		hudRenderer.draw(spriteBatch, cam);
 		hudRenderer.drawCursor(spriteBatch, world.clickedArea);
-		
-		
+		hudRenderer.drawCameraRotationCursor(spriteBatch, world.cameraRotationCtrl);
 		
 		spriteBatch.end();
 		stage.draw();
