@@ -1,0 +1,145 @@
+
+inventorytextures.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+pausebackground
+  rotate: false
+  xy: 0, 0
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+itemslotnormal
+  rotate: false
+  xy: 512, 448
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+itemslotpressed
+  rotate: false
+  xy: 512, 384
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+equipmentslotpressed
+  rotate: false
+  xy: 576, 448
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+armor
+  rotate: false
+  xy: 512, 320
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+shield
+  rotate: false
+  xy: 576, 384
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+equipmentslotnormal
+  rotate: false
+  xy: 640, 448
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+resumebuttonpressed
+  rotate: false
+  xy: 512, 288
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+sword
+  rotate: false
+  xy: 576, 320
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
+statsbox
+  rotate: false
+  xy: 640, 416
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+helm
+  rotate: false
+  xy: 704, 480
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+boots
+  rotate: false
+  xy: 512, 256
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+mppotion
+  rotate: false
+  xy: 544, 288
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+resumebuttonnormal
+  rotate: false
+  xy: 608, 352
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+gloves
+  rotate: false
+  xy: 640, 384
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+hppotion
+  rotate: false
+  xy: 672, 416
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+negativebuttonpressed
+  rotate: false
+  xy: 704, 450
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+negativebuttonnormal
+  rotate: false
+  xy: 736, 482
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+positivebuttonpressed
+  rotate: false
+  xy: 512, 226
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1
+positivebuttonnormal
+  rotate: false
+  xy: 544, 258
+  size: 30, 30
+  orig: 30, 30
+  offset: 0, 0
+  index: -1

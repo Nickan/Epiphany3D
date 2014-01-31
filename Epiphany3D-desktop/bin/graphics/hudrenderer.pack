@@ -1,0 +1,33 @@
+
+hudrenderer.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cursorsmall
+  rotate: false
+  xy: 0, 1
+  size: 100, 94
+  orig: 100, 94
+  offset: 0, 0
+  index: -1
+circle
+  rotate: false
+  xy: 100, 31
+  size: 68, 64
+  orig: 68, 64
+  offset: 0, 0
+  index: -1
+mousecursor
+  rotate: false
+  xy: 168, 55
+  size: 32, 40
+  orig: 32, 40
+  offset: 0, 0
+  index: -1
+hpbar
+  rotate: false
+  xy: 0, 0
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1

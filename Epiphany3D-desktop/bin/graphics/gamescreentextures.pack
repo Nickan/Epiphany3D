@@ -1,0 +1,33 @@
+
+gamescreentextures.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+pausebuttonpressed
+  rotate: false
+  xy: 0, 32
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+arrownormal
+  rotate: false
+  xy: 0, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+cursor
+  rotate: false
+  xy: 32, 24
+  size: 32, 40
+  orig: 32, 40
+  offset: 0, 0
+  index: -1
+pausebuttonnormal
+  rotate: false
+  xy: 64, 32
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
