@@ -1,46 +1,95 @@
 
 gamescreentextures.png
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
+arrowleftpressed
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrowupnormal
+  rotate: false
+  xy: 64, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrowleftnormal
+  rotate: false
+  xy: 128, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrowuppressed
+  rotate: false
+  xy: 192, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrowrightpressed
+  rotate: false
+  xy: 256, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrowdownnormal
+  rotate: false
+  xy: 320, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrowrightnormal
+  rotate: false
+  xy: 384, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+arrowdownpressed
+  rotate: false
+  xy: 448, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 optionbuttonpressed
   rotate: false
-  xy: 0, 98
+  xy: 512, 38
   size: 44, 26
   orig: 44, 26
   offset: 0, 0
   index: -1
 optionbuttonnormal
   rotate: false
-  xy: 0, 72
+  xy: 512, 12
   size: 44, 26
   orig: 44, 26
   offset: 0, 0
   index: -1
 pausebuttonpressed
   rotate: false
-  xy: 0, 40
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-arrownormal
-  rotate: false
-  xy: 32, 40
+  xy: 556, 32
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 cursor
   rotate: false
-  xy: 0, 0
+  xy: 588, 24
   size: 32, 40
   orig: 32, 40
   offset: 0, 0
   index: -1
 pausebuttonnormal
   rotate: false
-  xy: 32, 8
+  xy: 556, 0
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
