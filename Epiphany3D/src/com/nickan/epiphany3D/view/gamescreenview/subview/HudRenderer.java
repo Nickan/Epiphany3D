@@ -124,11 +124,14 @@ public class HudRenderer {
 		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
 		
 		if (enemy != null) {
-			comic.draw(spriteBatch, "Attack", widthUnit * 14.35f, heightUnit * 3.15f);
-			comic.draw(spriteBatch, "Move", widthUnit * 14.35f, heightUnit * 2.5f);
+//			comic.draw(spriteBatch, "Attack", widthUnit * 14.35f, heightUnit * 3.15f);
+//			comic.draw(spriteBatch, "Move", widthUnit * 14.35f, heightUnit * 2.5f);
+			arial.draw(spriteBatch, "Attack", widthUnit * 14.5f, heightUnit * 2.7f);
+			arial.draw(spriteBatch, "Move", widthUnit * 14.5f, heightUnit * 1.3f);
 			enemyNameLabel.draw(spriteBatch, 1);
 		} else {
-			comic.draw(spriteBatch, "Move", widthUnit * 14.35f, heightUnit * 3.15f);
+//			comic.draw(spriteBatch, "Move", widthUnit * 14.35f, heightUnit * 3.15f);
+			arial.draw(spriteBatch, "Move", widthUnit * 14.5f, heightUnit * 2.7f);
 		}
 		
 	}
@@ -146,6 +149,7 @@ public class HudRenderer {
 
 		hpBarPosX = (widthUnit * 8f) - (hpBarWidth / 2);
 		hpBarPosY = (heightUnit * 11.5f) - (hpBarHeight / 2);
+		arial.setScale(width / Epiphany3D.WIDTH, height / Epiphany3D.HEIGHT);
 	}
 
 	public void dispose() {
