@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-public class AttackDamageRenderer {
-	private static AttackDamageRenderer attackDamageRenderer = new AttackDamageRenderer();
+public class MovingScreenTextRenderer {
+	private static MovingScreenTextRenderer attackDamageRenderer = new MovingScreenTextRenderer();
 	private static final float DURATION = 5.0f;
 	private static final float Y_SPEED = 50f;
 	private static final Vector3 pos = new Vector3();
@@ -19,20 +19,20 @@ public class AttackDamageRenderer {
 	/**
 	 * Will Store the position and the damage to be rendered on the screen
 	 */
-	private Array<AttackDamageStorage> entities = new Array<AttackDamageStorage>();
+	private Array<ScreenTextDamageStorage> entities = new Array<ScreenTextDamageStorage>();
 
-	private AttackDamageRenderer() {
+	private MovingScreenTextRenderer() {
 		entities.clear();
 	}
 	
 	
-	private class AttackDamageStorage {
+	private class ScreenTextDamageStorage {
 		private Vector3 position;
 		private Vector2 pos;
-		private int damage;
+		private String damage;
 		private float duration;
 
-		private AttackDamageStorage(Vector3 position, int damage) {
+		private ScreenTextDamageStorage(Vector3 position, String damage) {
 			this.position = position;
 			this.pos = new Vector2();
 			this.damage = damage;
@@ -41,7 +41,7 @@ public class AttackDamageRenderer {
 	}
 
 	public void draw(SpriteBatch batch, PerspectiveCamera cam, BitmapFont font) {
-		for (AttackDamageStorage storage: entities) {
+		for (ScreenTextDamageStorage storage: entities) {
 			pos.set(storage.position);
 			float yPosDrawAdj = 2;
 			pos.y += yPosDrawAdj;
@@ -49,7 +49,7 @@ public class AttackDamageRenderer {
 			
 			builder.delete(0, builder.length());
 			
-			if (storage.damage == 0) {
+			if (storage.damage == null) {
 				builder.append("Miss");
 			} else {
 				builder.append(storage.damage);
@@ -60,7 +60,7 @@ public class AttackDamageRenderer {
 			storage.pos.y += Y_SPEED * Gdx.graphics.getDeltaTime();
 		}
 
-		for (AttackDamageStorage storage: entities) {
+		for (ScreenTextDamageStorage storage: entities) {
 			if (storage.duration > DURATION) {
 				entities.removeValue(storage, true);
 				break;
@@ -73,11 +73,16 @@ public class AttackDamageRenderer {
 	 * @param posRef - The reference to the vector
 	 * @param damage
 	 */
-	public void addAttackDamageToScreen(Vector3 posRef, int damage) {
-		entities.add(new AttackDamageStorage(posRef, damage));
+	public void addTextToScreen(Vector3 posRef, int damage) {
+		entities.add(new ScreenTextDamageStorage(posRef, Integer.toString(damage)));
 	}
+	
+	public void addTextToScreen(Vector3 posRef, String str) {
+		entities.add(new ScreenTextDamageStorage(posRef, str));
+	}
+	
 
-	public static AttackDamageRenderer getInstance() {
+	public static MovingScreenTextRenderer getInstance() {
 		return attackDamageRenderer;
 	}
 
