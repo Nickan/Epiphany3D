@@ -7,8 +7,9 @@ package com.nickan.epiphany3D.model;
  */
 public class StatisticsHandler {
 	public int level = 1;
-	public float experience = 0;
+	private long experience = 0;
 	public int remainingStatusPoints = 10;
+	private int expGained = 0;
 
 	public float currentHp;
 	public float currentMp;
@@ -199,19 +200,30 @@ public class StatisticsHandler {
 		remainingStatusPoints--;
 	}		
 
-
-	void gainExperience(int enemyLevel) {
+	
+	public void gainExperience(int enemyLevel) {
 		// Add exp base on the level of the character
 		// Should be just greater than 9 levels of the character being killed
 		float levelGap = enemyLevel - level;
 		if (levelGap >= -10) {
-			experience += 1 + (levelGap / 10);
+			expGained = Math.round(1 + (levelGap / 10));
+			experience += expGained;
 
 			if (experience >= 100) {
 				experience -= 100;
 				levelUp();
 			}
 		}
+	}
+	
+	/**
+	 * After getting the values, it automatically sets to zero
+	 * @return
+	 */
+	public int getExpGained() {
+		int tempExpGained = expGained;
+		expGained = 0;
+		return tempExpGained;
 	}
 
 	void levelUp() {

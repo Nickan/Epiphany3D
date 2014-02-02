@@ -6,7 +6,7 @@ import com.nickan.epiphany3D.model.messagingsystem.MessageDispatcher;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
 import com.nickan.epiphany3D.model.state.BaseState;
-import com.nickan.epiphany3D.view.gamescreenview.subview.AttackDamageRenderer;
+import com.nickan.epiphany3D.view.gamescreenview.subview.MovingScreenTextRenderer;
 
 public class GlobalState implements BaseState<Character> {
 	private static BaseState<Character> instance = new GlobalState();
@@ -42,12 +42,16 @@ public class GlobalState implements BaseState<Character> {
 			Character sender = getCharacter(telegram.senderId);
 			float tempNum = (Float) telegram.extraInfo;
 			receiver.applyDamage((int) tempNum);
-			AttackDamageRenderer.getInstance().addAttackDamageToScreen(receiver.getPosition(), receiver.statsHandler.getHpDamage());
+			MovingScreenTextRenderer.getInstance().addTextToScreen(receiver.getPosition(), receiver.statsHandler.getHpDamage());
 			
 			if (!receiver.isAlive()) {
 				receiver.changeState(KilledState.getInstance());
 				sender.setEnemyId(-1);
 				sender.changeState(IdleState.getInstance());
+				
+				// Add experience based on the enemy's level
+				sender.statsHandler.gainExperience(receiver.statsHandler.level);
+				MovingScreenTextRenderer.getInstance().addTextToScreen(sender.getPosition(), "Exp: " +sender.statsHandler.getExpGained() + " !");
 			}
 			
 			return true;

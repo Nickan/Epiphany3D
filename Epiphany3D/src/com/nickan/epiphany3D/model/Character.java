@@ -11,7 +11,7 @@ import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
 import com.nickan.epiphany3D.model.state.BaseState;
 import com.nickan.epiphany3D.model.state.StateMachine;
-import com.nickan.epiphany3D.view.gamescreenview.subview.AttackDamageRenderer;
+import com.nickan.epiphany3D.view.gamescreenview.subview.MovingScreenTextRenderer;
 import com.nickan.framework1_0.pathfinder1_0.Node;
 
 /**
@@ -153,7 +153,7 @@ public class Character extends MoveableEntity {
 
 	private void attackMiss() {
 		Character enemy = (Character) EntityManager.getInstance().getEntity(enemyId);
-		AttackDamageRenderer.getInstance().addAttackDamageToScreen(enemy.getPosition(), 0);
+		MovingScreenTextRenderer.getInstance().addTextToScreen(enemy.getPosition(), 0);
 	}
 
 	@Override
