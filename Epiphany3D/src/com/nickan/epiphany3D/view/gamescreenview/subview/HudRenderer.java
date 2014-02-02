@@ -46,7 +46,7 @@ public class HudRenderer {
 		hpBarWidth = Gdx.graphics.getWidth() / 3;
 		hpBarHeight = Gdx.graphics.getHeight() / 30;
 
-		LabelStyle ls = new LabelStyle(comic, Color.RED);
+		LabelStyle ls = new LabelStyle(arial, Color.RED);
 		enemyNameLabel = new Label("Enemy", ls);
 		enemyNameLabel.setHeight(hpBarHeight);
 
@@ -121,7 +121,7 @@ public class HudRenderer {
 	}
 	
 	public void drawLetters(SpriteBatch spriteBatch, PerspectiveCamera cam) {
-		AttackDamageRenderer.getInstance().draw(spriteBatch, cam, comic);
+		MovingScreenTextRenderer.getInstance().draw(spriteBatch, cam, arial);
 		
 		if (enemy != null) {
 //			comic.draw(spriteBatch, "Attack", widthUnit * 14.35f, heightUnit * 3.15f);
@@ -145,7 +145,10 @@ public class HudRenderer {
 
 		enemyNameLabel.setSize(0, 0);
 		enemyNameLabel.setFontScale(width / Epiphany3D.WIDTH, height / Epiphany3D.HEIGHT);
-		enemyNameLabel.setPosition(widthUnit * 7.5f, heightUnit * 11.68f);
+		
+		// Comic bitmapfont position
+//		enemyNameLabel.setPosition(widthUnit * 7.5f, heightUnit * 11.68f);
+		enemyNameLabel.setPosition(widthUnit * 7.35f, heightUnit * 11.5f);
 
 		hpBarPosX = (widthUnit * 8f) - (hpBarWidth / 2);
 		hpBarPosY = (heightUnit * 11.5f) - (hpBarHeight / 2);
