@@ -48,7 +48,7 @@ public class World {
 
 	public World() {
 		player = new Player(new Vector3(20.5f, 0, 20.5f), new Vector3(0, 0, 0), new Vector3(0, 0, 1f), 2f);
-//		player.statsHandler.whosYourDaddy();
+		player.statsHandler.whosYourDaddy();
 		System.out.println("Player's attack speed " + player.statsHandler.getAttackSpd());
 		System.out.println("Player attack delay " + player.statsHandler.attackDelay);
 		System.out.println("Player' Agi " + player.statsHandler.getAgi());
