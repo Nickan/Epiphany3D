@@ -1,8 +1,8 @@
 package com.nickan.epiphany3D.model.characterstate;
 
+import com.nickan.epiphany3D.model.Character;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.state.BaseState;
-import com.nickan.epiphany3D.model.Character;
 import com.nickan.epiphany3D.view.gamescreenview.World;
 
 public class KilledState implements BaseState<Character> {
