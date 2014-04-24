@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<module>
-    <entry-point class="com.nickan.epiphany3D.client.GwtLauncher"/>
-    <set-configuration-property name="gdx.assetpath" value="../Epiphany3D-android/assets"/>
-    <inherits name="Epiphany3D"/>
-    <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt"/>
-</module>
