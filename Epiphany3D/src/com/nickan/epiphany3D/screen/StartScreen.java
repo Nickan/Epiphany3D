@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.nickan.epiphany3D.Epiphany3D;
+import com.nickan.epiphany3D.screen.gamescreen.GameScreen;
 
 public class StartScreen implements Screen {
 	Skin skin;

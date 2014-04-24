@@ -11,7 +11,7 @@ import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
 import com.nickan.epiphany3D.model.state.BaseState;
 import com.nickan.epiphany3D.model.state.StateMachine;
-import com.nickan.epiphany3D.view.gamescreenview.subview.MovingScreenTextRenderer;
+import com.nickan.epiphany3D.screen.gamescreen.MovingScreenTextRenderer;
 import com.nickan.framework1_0.pathfinder1_0.Node;
 
 /**

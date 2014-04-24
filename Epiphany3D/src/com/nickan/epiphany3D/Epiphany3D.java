@@ -1,8 +1,8 @@
 package com.nickan.epiphany3D;
 
 import com.badlogic.gdx.Game;
-import com.nickan.epiphany3D.screen.GameScreen;
 import com.nickan.epiphany3D.screen.StartScreen;
+import com.nickan.epiphany3D.screen.gamescreen.GameScreen;
 
 public class Epiphany3D extends Game {
 	public static boolean debug = false;

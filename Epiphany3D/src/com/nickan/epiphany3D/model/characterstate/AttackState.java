@@ -8,7 +8,7 @@ import com.nickan.epiphany3D.model.Character.Action;
 import com.nickan.epiphany3D.model.Character.State;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.state.BaseState;
-import com.nickan.epiphany3D.view.gamescreenview.World;
+import com.nickan.epiphany3D.screen.gamescreen.World;
 import com.nickan.framework1_0.pathfinder1_0.Node;
 import com.nickan.framework1_0.pathfinder1_0.Node.NodeType;
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector3;
-import com.nickan.epiphany3D.view.gamescreenview.World;
+import com.nickan.epiphany3D.screen.gamescreen.World;
 import com.nickan.framework1_0.pathfinder1_0.Node;
 import com.nickan.framework1_0.pathfinder1_0.Node.NodeType;
 

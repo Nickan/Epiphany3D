@@ -6,7 +6,7 @@ import com.nickan.epiphany3D.model.messagingsystem.MessageDispatcher;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram;
 import com.nickan.epiphany3D.model.messagingsystem.Telegram.Message;
 import com.nickan.epiphany3D.model.state.BaseState;
-import com.nickan.epiphany3D.view.gamescreenview.subview.MovingScreenTextRenderer;
+import com.nickan.epiphany3D.screen.gamescreen.MovingScreenTextRenderer;
 
 public class GlobalState implements BaseState<Character> {
 	private static BaseState<Character> instance = new GlobalState();
