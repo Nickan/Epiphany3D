@@ -1,3 +1,10 @@
-A 3D game using the awesome power of LibGDX libgdx.badlogicgames.com. I am making this game for educational purposes, if I violated someone or a company about my game, please notify me and I will change it immediately.
+A 3D game using the awesome power of LibGDX libgdx.badlogicgames.com. 
 
-The game is still in Alpha stage, so there are lots of things to be added, and I am new to Git Hub so this will be messy.
+I am making this game for educational purposes, if I violated someone or
+a company about my game, please notify me and I will change it immediately.
+
+The runnable jar for desktop is in Epiphany3D-desktop/bin and the apk for
+android device is in Epiphany3D-android/bin.
+
+Tested running on Windows 7 and Ubuntu 13.10 but requires Java JRE/JDK
+installed for the desktop version.
