@@ -8,4 +8,5 @@ android device is in Epiphany3D-android/bin.
 Tested running on Windows 7 and Ubuntu 13.10 but requires Java JRE/JDK
 installed for the desktop version.
 
-https://www.oracle.com/java/technologies/javase-jre8-downloads.html
+Required software to run on Desktop:
+  https://www.oracle.com/java/technologies/javase-jre8-downloads.html
